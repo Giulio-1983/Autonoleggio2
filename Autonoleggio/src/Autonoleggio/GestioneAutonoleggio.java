@@ -7,6 +7,39 @@ public class GestioneAutonoleggio {
 private List<AutoNoleggiabile> parcoAuto = new ArrayList<>();
 private List<Utente> listaUtenti = new ArrayList<>();
 private List<Batmobile> listaBatmobili = new ArrayList<>();
+
+public void caricaFileAuto() {
+	
+}
+
+public void salvaFileAuto() {
+	
+}
+
+public void caricaFileUtenti(){
+	
+}
+
+
+public void salvaFileUtenti() {
+	
+}
+public void caricaFileBatmobili() {
+	
+}
+
+public GestioneAutonoleggio(List<AutoNoleggiabile> parcoAuto, List<Utente> listaUtenti,
+		List<Batmobile> listaBatmobili) {
+	super();
+	this.parcoAuto = parcoAuto;
+	this.listaUtenti = listaUtenti;
+	this.listaBatmobili = listaBatmobili;
+}
+
+public void salvaFileBatmobili() {
+	
+}
+
 public void cercaAutoCostoDisp() {
 	
 }
