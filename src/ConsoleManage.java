@@ -455,17 +455,23 @@ public class ConsoleManage {
         return OpzioniCliente.values()[input-1];
     }
 
-    public Integer stampaOpzioniBatman() {
-        Integer scelta = null;
-        do {
-            System.out.println("1 -> Aggiungi auto\n" +
-                    "2 -> Rimuovi auto\n" +
-                    "3 -> Stampa lista batmobili\n"+
-                    "0 -> Esci");
-            scelta = Integer.parseInt(myScan.nextLine());
-        } while (scelta > 3 && scelta < 0);
-        return scelta;
-    }
+    public OpzioniBatman stampaOpzioniBatman() {
+
+            int input;
+            do {
+                for (OpzioniBatman opzione : OpzioniBatman.values()) {
+                    System.out.println(++indexMenu + " -> " + opzione.getDescription());
+                }
+                System.out.println("Inserisci la tua scelta: ");
+                input = Integer.parseInt(myScan.nextLine());
+                if (input < 0 || input >= OpzioniBatman.values().length) {
+                    System.out.println("Scelta non valida. Riprova.");
+                }
+            } while (input < 0 || input >= OpzioniBatman.values().length);
+            System.out.println("Hai scelto: " + OpzioniBatman.values()[input-1]);
+            return OpzioniBatman.values()[input-1];
+        }
+
 
     public void closeScanner(){
         myScan.close();

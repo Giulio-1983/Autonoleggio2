@@ -1,14 +1,15 @@
+import java.time.LocalDateTime;
+
 public class AutoNoleggiabile extends Automobile {
     private boolean isDisponibile;
     private double costoOrario;
-    private String affidatario;
 
-    public AutoNoleggiabile(String marca, String modello, String targa, boolean isDisponibile, double costoOrario,
-                            String affidatario) {
+
+    public AutoNoleggiabile(String marca, String modello, String targa, boolean isDisponibile, double costoOrario) {
         super(marca, modello, targa);
         this.isDisponibile = isDisponibile;
         this.costoOrario = costoOrario;
-        this.affidatario = affidatario;
+
     }
 
     public boolean isDisponibile() {
@@ -27,16 +28,9 @@ public class AutoNoleggiabile extends Automobile {
         this.costoOrario = costoOrario;
     }
 
-    public String getAffidatario() {
-        return affidatario;
-    }
-
-    public void setAffidatario(String affidatario) {
-        this.affidatario = affidatario;
-    }
 
     @Override
     public String toString() {
-        return "," +super.toString()+"," + isDisponibile +"," +costoOrario +"," + affidatario;
+        return "," +super.toString()+"," + isDisponibile +"," +costoOrario;
     }
 }

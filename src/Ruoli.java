@@ -1,4 +1,5 @@
 public enum Ruoli {
     MANAGER,
-    CLIENTE
+    CLIENTE,
+    BATMAN
 }

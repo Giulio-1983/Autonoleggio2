@@ -1,0 +1,1 @@
+DD111SS,marca,modello,affidatario,inizioNoleggio,fineNoleggio,sommaPagata
