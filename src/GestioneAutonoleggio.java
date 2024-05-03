@@ -116,13 +116,24 @@ public class GestioneAutonoleggio {
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
         if (marcaArr[0].equals("1")) marca = marcaArr[1];
+        System.out.println("La marca inserita è: " + marca);
         String[] modelloArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String modello = null;
         if (modelloArr[0].equals("1")) modello = modelloArr[1];
+        System.out.println("Il modello inserito è: " + modello);
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         System.out.println("Inserisci costo orario");
         double costoOrario = cm.dammiDouble("Inserisci costo orario in formato: x.xx: ", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
-        parcoAuto.put(targa, new AutoNoleggiabile(marca, modello, targa, true, costoOrario));
+        //controllo se esiste targa nella lista
+        for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
+            if (entry.getValue().getTarga().equalsIgnoreCase(targa)) {
+                System.out.println("Targa inserita è gia presente in parco auto");
+            } else {
+                parcoAuto.put(targa, new AutoNoleggiabile(marca, modello, targa, true, costoOrario));
+                System.out.println("Auto aggiunto in parco auto: ");
+            }
+        }
+
 
     }
 
@@ -139,12 +150,22 @@ public class GestioneAutonoleggio {
         String[] mailArr = cm.giveMail("Inserisci mail", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         if (mailArr[0].equals("1")) mail = mailArr[1];
         Ruoli ruolo = null;
+        //batman è gia inserito nella listaUtenti
         if (mail.contains("@autonoleggio.com")) {
             ruolo = Ruoli.MANAGER;
         } else {
             ruolo = Ruoli.CLIENTE;
         }
-        listaUtenti.put(mail, new Utente(nome, cognome, mail, psw, ruolo));
+        //controllo se esiste mail nella lista
+        for (Map.Entry<String, Utente> entry : listaUtenti.entrySet()) {
+            if (entry.getValue().getEmail().equalsIgnoreCase(mail)) {
+                System.out.println("Utente con email inserito è gia presente in listaUtenti");
+            } else {
+                listaUtenti.put(mail, new Utente(nome, cognome, mail, psw, ruolo));
+                System.out.println("Utente aggiunto nella lista utenti: ");
+            }
+        }
+
     }
 
     public void salvaFileAuto() {
@@ -376,7 +397,6 @@ public class GestioneAutonoleggio {
     }
 
 
-
     public void stampaBatmobili() {
 
     }
@@ -390,6 +410,7 @@ public class GestioneAutonoleggio {
     }
 
     public void caricaFileBatmobili() {
+
 
     }
 
