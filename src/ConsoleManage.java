@@ -467,5 +467,7 @@ public class ConsoleManage {
         return scelta;
     }
 
-
+    public void closeScanner(){
+        myScan.close();
+    }
 }

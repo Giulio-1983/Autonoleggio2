@@ -109,6 +109,7 @@ public class GestioneAutonoleggio {
     }
 
     public void salvaFileAuto() {
+        inputMappaAuto();
         String linea;
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(fileAuto));
@@ -155,9 +156,9 @@ public class GestioneAutonoleggio {
     }
 
     public void mostraAutoDisp() {
-        int index=0;
+        int index = 0;
         for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
-            System.out.println(++index +". "+ entry.getValue().toString().substring(1) );
+            System.out.println(++index + ". " + entry.getValue().toString().substring(1));
         }
     }
 
@@ -216,7 +217,7 @@ public class GestioneAutonoleggio {
             if (input == 1) {
                 salvaFileUtenti();
             }
-        } while (input != 2&& input != 0);
+        } while (input != 2 && input != 0);
         if (input == 2) {
             utente = login();
             if (utente.getEmail().equals("iambatman@batman.com")) {
@@ -264,7 +265,7 @@ public class GestioneAutonoleggio {
             System.out.println("Arrivederci!");
 
         }
-
+        cm.closeScanner();
 
     }
 }
