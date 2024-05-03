@@ -36,7 +36,6 @@ public void salvaFileBatmobili() {
 	
 }
 
-
 public void cercaAutoCostoDisp() {
 	
 }
