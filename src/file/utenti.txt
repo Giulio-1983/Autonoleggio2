@@ -1,1 +1,3 @@
-ii@ii.ii,Iry,mel,ii@ii.ii,I-111111,CLIENTE
+cc@cc.cc,Cliente,Uno,cc@cc.cc,C-111111,CLIENTE
+bb@bb.bb,bat,man,bb@bb.bb,B-111111,BATMAN
+mm@mm.mm,manager1,Uno,mm@mm.mm,M-111111,MANAGER

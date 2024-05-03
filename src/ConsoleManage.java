@@ -1,6 +1,9 @@
+import enums.OpzioniBatman;
+import enums.OpzioniCliente;
+import enums.OpzioniManager;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.FormatStyle;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 

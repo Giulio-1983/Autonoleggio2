@@ -1,3 +1,5 @@
+package enums;
+
 public enum OpzioniBatman {
     AGGIUNGI_BATMOBILE("Aggiungi Batmobile"),
     RIMUOVI_BATMOBILE("Rimuovi Batmobile"),
