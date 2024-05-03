@@ -24,6 +24,7 @@ public class GestioneAutonoleggio {
     private final String fileUtenti = "src" + File.separator + "file" + File.separator + "utenti.txt";
     private final String fileAuto = "src" + File.separator + "file" + File.separator + "auto.txt";
     private final String fileBatmoboli = "src" + File.separator + "file" + File.separator + "batmobili.txt";
+    private final String fileNoleggioStorico = "src" + File.separator + "file" + File.separator + "noleggioStorico.txt";
 
     public Utente login() {
         boolean isTrovato = false;
@@ -112,12 +113,12 @@ public class GestioneAutonoleggio {
     }
 
     //metodo di supporto -da chiamare in salvaFileAuto
-    public void inputMappaAuto() {
+    public void aggiungiAuto() {
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
         if (marcaArr[0].equals("1")) marca = marcaArr[1];
         System.out.println("La marca inserita è: " + marca);
-        String[] modelloArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
+        String[] modelloArr = cm.giveString("Inserisci modello", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String modello = null;
         if (modelloArr[0].equals("1")) modello = modelloArr[1];
         System.out.println("Il modello inserito è: " + modello);
@@ -133,12 +134,11 @@ public class GestioneAutonoleggio {
                 System.out.println("Auto aggiunto in parco auto: ");
             }
         }
-
-
+        salvaFileAuto();
     }
 
     //metodo di supporto -da chiamare in salvaFileUtenti
-    public void inputMappaUtenti() {
+    public void aggiungiUtente() {
         String[] nomeArr = cm.giveString("Inserisci nome", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String nome = null;
         if (nomeArr[0].equals("1")) nome = nomeArr[1];
@@ -165,11 +165,10 @@ public class GestioneAutonoleggio {
                 System.out.println("Utente aggiunto nella lista utenti: ");
             }
         }
-
+        salvaFileUtenti();
     }
 
     public void salvaFileAuto() {
-        inputMappaAuto();
         String linea;
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(fileAuto));
@@ -182,11 +181,9 @@ public class GestioneAutonoleggio {
         } catch (IOException e) {
             System.out.println(e);
         }
-
     }
 
     public void salvaFileUtenti() {
-        inputMappaUtenti();
         String linea;
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(fileUtenti));
@@ -199,24 +196,24 @@ public class GestioneAutonoleggio {
         } catch (IOException e) {
             System.out.println(e);
         }
-
     }
 
 
     public void cercaAutoCostoDisp() {
-        Double costo = cm.dammiDouble("Inserisci costo massimo", "Inserimenro errato, riprova", "Inserimento NON andato con sucesso", "Inserimento costo andato con sucesso", 3);
+        Double costo = cm.dammiDouble("Inserisci costo massimo", "Inserimenro errato, riprova", "Inserimento NON andato con successo", "Inserimento costo andato con successo", 3);
         int index = 0;
         if (costo != null && parcoAuto.size() > 0) {
+            System.out.println("Lista di auto con costo orario <= " + costo + ": ");
             for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
                 if (entry.getValue().getCostoOrario() <= costo && entry.getValue().isDisponibile()) {
-                    System.out.println("Lista di auto con costo orario <= " + costo + ": ");
                     System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+                }else{
+                    System.out.println("Non ci sono auto disponobili per il costo cercato");
                 }
             }
         } else {
             System.out.println("Costo cercato non definito, non possibile mostrare auto");
         }
-
     }
 
     public void mostraAutoDisp() {
@@ -256,9 +253,13 @@ public class GestioneAutonoleggio {
         int index = 0;
         if (parcoAuto.size() > 0) {
             for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
-                if (entry.getValue().isDisponibile() && entry.getValue().getMarca().equalsIgnoreCase(marca) && entry.getValue().getModello().equalsIgnoreCase(modello)) {
+                if (entry.getValue().isDisponibile() &&
+                        entry.getValue().getMarca().equalsIgnoreCase(marca) &&
+                        entry.getValue().getModello().equalsIgnoreCase(modello)) {
                     System.out.println("Lista di auto con marca: " + marca + " e modello: " + modello);
                     System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+                }else{
+                    System.out.println("Non ci sono auto disponibili con parametri cercati");
                 }
             }
         } else {
@@ -355,8 +356,8 @@ public class GestioneAutonoleggio {
                 salvaFileAuto();
                 System.out.println("Hai cancellato auto: " + entry.getValue().toString().substring(1));
             }
-
         }
+        salvaFileAuto();
     }
 
     // public void aggiungiAuto() {} //tutto in salvaFileAuto
@@ -399,23 +400,94 @@ public class GestioneAutonoleggio {
 
     public void stampaBatmobili() {
 
+        int index = 0;
+        if (listaBatmobili.size() > 0) {
+            System.out.println("Batmobili");
+            for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
+                System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+            }
+
+        } else {
+            System.out.println("Non ci sono batmobili");
+        }
     }
 
     public void aggiungiBatmobile() {
+        String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
+        String marca = null;
+        if (marcaArr[0].equals("1")) marca = marcaArr[1];
+        System.out.println("La marca inserita è: " + marca);
+        String[] modelloArr = cm.giveString("Inserisci modello", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
+        String modello = null;
+        if (modelloArr[0].equals("1")) modello = modelloArr[1];
+        System.out.println("Il modello inserito è: " + modello);
+        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String[] nomeArr = cm.giveString("Inserisci nome", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
+        String nome = null;
+        if (nomeArr[0].equals("1")) nome = nomeArr[1];
+        System.out.println("Il nomr inserito è: " + nome);
+        String[] accessoriArr = cm.giveString("Inserisci accessori", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
+        String accessori = null;
+        if (accessoriArr[0].equals("1")) accessori = accessoriArr[1];
+        System.out.println("hai inserito accessori: " + accessori);
+        //controllo se esiste targa nella lista
+        for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
+            if (entry.getValue().getTarga().equalsIgnoreCase(targa)) {
+                System.out.println("Targa inserita è gia presente nella lsta batmobili");
+            } else {
+                listaBatmobili.put(targa, new Batmobile(marca, modello, targa, nome, accessori));
+                System.out.println("Auto aggiunto in lista batmobili ");
+            }
+        }
+        salvaFileBatmobili();
 
     }
 
     public void rimuoviBatmobile() {
-
+        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(targa)) {
+                listaBatmobili.remove(entry.getKey());
+                salvaFileBatmobili();
+                System.out.println("Hai cancellato auto: " + entry.getValue().toString().substring(1));
+            }
+        }
+        salvaFileBatmobili();
     }
 
     public void caricaFileBatmobili() {
-
+        String linea;
+        try {
+            BufferedReader breader = new BufferedReader(new FileReader(fileBatmoboli));
+            while ((linea = breader.readLine()) != null) {
+                String[] datiAuto = linea.split(",");
+                if (datiAuto.length == 6) {
+                    Batmobile batmobile = new Batmobile(datiAuto[1].trim(), datiAuto[2].trim(), datiAuto[3].trim(), datiAuto[4].trim(), datiAuto[5].trim());
+                    listaBatmobili.put(datiAuto[0], batmobile);
+                } else {
+                    System.out.println("Inserimento in HashMap non è possibile");
+                }
+            }
+            breader.close();
+        } catch (IOException e) {
+            System.out.println("Problema di leggere da file");
+        }
 
     }
 
     public void salvaFileBatmobili() {
-
+        String linea;
+        try {
+            BufferedWriter br = new BufferedWriter(new FileWriter(fileBatmoboli));
+            for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
+                linea = entry.getKey() + "," + entry.getValue() + "\n";
+                br.write(linea);
+            }
+            br.close();
+            System.out.println("Il file è stato aggiornato");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     public void stampaMenu() {
@@ -431,7 +503,7 @@ public class GestioneAutonoleggio {
         do {
             input = cm.registrazioneLogin();
             if (input == 1) {
-                salvaFileUtenti();
+                aggiungiUtente();
             }
         } while (input != 2 && input != 0);
         if (input == 2) {
@@ -456,7 +528,7 @@ public class GestioneAutonoleggio {
                         if (opzioniManager.equals(OpzioniManager.CERCA_PER_MARCA_MODELLO)) cercaAutoMarcaDisp();
                         if (opzioniManager.equals(OpzioniManager.VEDI_LISTA)) mostraAutoDisp();
                         if (opzioniManager.equals(OpzioniManager.NOLEGGIA_AUTO)) noleggia();
-                        if (opzioniManager.equals(OpzioniManager.AGGIUNGI_AUTO)) salvaFileAuto();
+                        if (opzioniManager.equals(OpzioniManager.AGGIUNGI_AUTO)) aggiungiAuto();
                         if (opzioniManager.equals(OpzioniManager.RIMUOVI_AUTO)) rimuoviAuto();
                         if (opzioniManager.equals(OpzioniManager.CAMBIA_STATO_AUTO)) cambiaStatoAuto();
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_AUTO)) mostraAuto();

@@ -1,2 +1,2 @@
-batmobile1, accessore1
-batmobile2, accessore2
+SS444SS,marca1,modello1,SS444SS,batmobile1, accessore1
+BB444BB,marca2,modello2,BB444BB,DD111SSbatmobile2, accessore2
