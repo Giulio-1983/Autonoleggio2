@@ -3,20 +3,21 @@ public class Utente {
 	private String cognome;
 	private String email;
 	private String password;
-	private String ruolo;
+	private Ruoli ruolo;
 	
 	
 	// Costruttore:
-		Utente(String nome, String cognome , String email, String password, String ruolo) {
-			this.setNome(nome);
-			this.setCognome(cognome);
-			this.setEmail(email);
-			this.setPassword(password);
-			this.setRuolo(ruolo);
-}
 
 
-		public String getNome() {
+	public Utente(String nome, String cognome, String email, String password, Ruoli ruolo) {
+		this.nome = nome;
+		this.cognome = cognome;
+		this.email = email;
+		this.password = password;
+		this.ruolo = ruolo;
+	}
+
+	public String getNome() {
 			return nome;
 		}
 
@@ -55,18 +56,12 @@ public class Utente {
 			this.password = password;
 		}
 
+	public Ruoli getRuolo() {
+		return ruolo;
+	}
 
-		public String getRuolo() {
-			return ruolo;
-		}
-
-
-		public void setRuolo(String ruolo) {
-			this.ruolo = ruolo;
-		}
-		
-	
-		
-		
-		
+	@Override
+	public String toString() {
+		return nome +"," + cognome +"," +  email +"," + password +"," +ruolo;
+	}
 }

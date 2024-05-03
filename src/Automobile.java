@@ -28,4 +28,9 @@ public class Automobile {
 	public void setTarga(String targa) {
 		this.targa = targa;
 	}
+
+	@Override
+	public String toString() {
+		return marca +"," +  modello +"," + targa;
+	}
 }
