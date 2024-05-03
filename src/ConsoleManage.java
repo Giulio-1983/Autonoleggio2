@@ -4,6 +4,7 @@ import enums.OpzioniManager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -347,16 +348,16 @@ public class ConsoleManage {
     public String dammiTarga(String msgShow, String msgRetry, String msgError,
                              String msgSuccess, int tentativi) {
         String input = null;
-        String regexCodiceFiscale = "String regex = \"^[A-Z]{2}\\\\d{3}[A-Z]{2}$\";";
+        String regexTarga = "^[a-zA-Z0-9]{1,7}$";
 
         do {
             System.out.println(ANSI_CYAN_BACKGROUND + ANSI_BLACK + msgShow + ANSI_RESET);
             input = myScan.nextLine().trim();
-            if (!Pattern.matches(regexCodiceFiscale, input)) {
+            if (!Pattern.matches(regexTarga, input)) {
                 System.out.println(ANSI_YELLOW_BACKGROUND + ANSI_RED + msgRetry + ANSI_RESET);
                 tentativi--;
             }
-        } while (input == null || !Pattern.matches(regexCodiceFiscale, input) && tentativi != 0);
+        } while (input == null || !Pattern.matches(regexTarga, input) && tentativi != 0);
 
 
         if (input == null) {
@@ -393,6 +394,34 @@ public class ConsoleManage {
         }
 
         return result;
+    }
+
+    public LocalDate dammiData(String msgShow, String msgRetry, String msgError,
+                               String msgSuccess, int tentativi) {
+        String input = null;
+        LocalDate data = null;
+
+        String regexData = "^(0[1-9]|1\\d|2[0-8])-(0[1-9]|1[0-2])-(19\\d{2}|20[0-2]\\d|202[0-4])$";
+        do {
+            System.out.println(ANSI_CYAN_BACKGROUND + ANSI_BLACK + msgShow + ANSI_RESET);
+            input = myScan.nextLine().trim();
+            if (input != null && !Pattern.matches(regexData, input)) {
+                System.out.println(ANSI_YELLOW_BACKGROUND + ANSI_RED + msgRetry + ANSI_RESET);
+                input = null;
+                tentativi--;
+            }
+        } while (input == null && tentativi != 0);
+        if (input == null) {
+            System.out.println(ANSI_YELLOW_BACKGROUND + ANSI_RED + msgError + ANSI_RESET);
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            data = LocalDate.parse(input, formatter);
+            System.out.println(ANSI_GREEN);
+            System.out.println(msgSuccess);
+            System.out.println(ANSI_RESET);
+        }
+
+        return data;
     }
 
     public String dammiPassword(String msgShow, String msgRetry, String msgError,

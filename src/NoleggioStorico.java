@@ -44,4 +44,9 @@ public class NoleggioStorico {
     public void setSommaPagata(Double sommaPagata) {
         this.sommaPagata = sommaPagata;
     }
+
+    @Override
+    public String toString() {
+        return affidatarioEmail +","+ inizioNoleggio +","+ fineNoleggio +","+ sommaPagata;
+    }
 }

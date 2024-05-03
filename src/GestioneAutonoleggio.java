@@ -197,6 +197,20 @@ public class GestioneAutonoleggio {
             System.out.println(e);
         }
     }
+    public void salvaFileAutoNoleggiate(){
+        String linea;
+        try {
+            BufferedWriter br = new BufferedWriter(new FileWriter(fileNoleggioStorico));
+            for (Map.Entry<Automobile, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+                linea = entry.getKey() + "," + entry.getValue() + "\n";
+                br.write(linea);
+            }
+            br.close();
+            System.out.println("Il file è stato aggiornato");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
 
 
     public void cercaAutoCostoDisp() {
@@ -300,24 +314,27 @@ public class GestioneAutonoleggio {
         String modello = null;
         Double costo = null;
         String targa = cm.dammiTarga("Inserisci la targa di auto da nollegiere", "Inserimento targa errato, riprova", "Inserimento targa non andato con successo", "Inserimento targa andato con successo", 3);
+        dateInizio=cm.dammiData("Inserisci la data inizio noleggio : dd-mm-yyyy","Non è stata riconosciuta come data", "Non è stata inserita una data","Data inserita con sucesso", 3);
 
-        LocalDate[] inizioDataArr = cm.giveDate("Inserisci una data (dd/mm/yyyy)", "Non è stata riconosciuta come data", "Non è stata inserita una data", 3);
+       /* LocalDate[] inizioDataArr = cm.giveDate("Inserisci una data del inizio noleggio (dd/mm/yyyy)", "Non è stata riconosciuta come data", "Non è stata inserita una data", 3);
         if (inizioDataArr[0].equals(LocalDate.of(0002, 01, 01))) {
             dateInizio = inizioDataArr[1];
             System.out.println("La data inserita  è: " + dateInizio);
-        }
-        LocalTime[] inizioTimeArr = (cm.giveTime("Inserisci un orario (hh:mm)", "Non è stato riscontrato come orario",
+        }*/
+        LocalTime[] inizioTimeArr = (cm.giveTime("Inserisci un orario del inizio noleggio (hh:mm)", "Non è stato riscontrato come orario",
                 "Non è stato inserito un orario", 3));
         if (inizioTimeArr[0].equals(LocalTime.of(00, 01))) {
             timeInizio = inizioTimeArr[1];
             System.out.println("L'orario inserito è: " + timeInizio);
         }
-        LocalDate[] fineDataArr = cm.giveDate("Inserisci una data (dd/mm/yyyy)", "Non è stata riconosciuta come data", "Non è stata inserita una data", 3);
+        dateFine=cm.dammiData("Inserisci la data fine noleggio : dd-mm-yyyy","Non è stata riconosciuta come data", "Non è stata inserita una data","Data inserita con sucesso", 3);
+
+       /* LocalDate[] fineDataArr = cm.giveDate("Inserisci una data della fine di noleggio (dd/mm/yyyy)", "Non è stata riconosciuta come data", "Non è stata inserita una data", 3);
         if (inizioDataArr[0].equals(LocalDate.of(0002, 01, 01))) {
             dateFine = inizioDataArr[1];
             System.out.println("La data inserita  è: " + dateFine);
-        }
-        LocalTime[] fimeTimeArr = (cm.giveTime("Inserisci un orario (hh:mm)", "Non è stato riscontrato come orario",
+        }*/
+        LocalTime[] fimeTimeArr = (cm.giveTime("Inserisci un orario della fine di noleggio (hh:mm)", "Non è stato riscontrato come orario",
                 "Non è stato inserito un orario", 3));
         if (inizioTimeArr[0].equals(LocalTime.of(00, 01))) {
             timeFine = inizioTimeArr[1];
@@ -342,6 +359,7 @@ public class GestioneAutonoleggio {
             Automobile automobile = new Automobile(marca, modello, targa);
             NoleggioStorico noleggioStorico = new NoleggioStorico(utente.getEmail(), inizioDataOra, fineDataOra, costo);
             autoNoleggate.put(automobile, noleggioStorico);
+            salvaFileAutoNoleggiate();
             System.out.println("Hai noleggiato auto: " + automobile.toString() + ", Costo: " + costo);
         } else {
             System.out.println("Noleggio NON è effettuato");
