@@ -18,18 +18,8 @@ public class GestioneAutonoleggio {
     private Map<String, Utente> listaUtenti = new HashMap<>();
     private Map<String, Batmobile> listaBatmobili = new HashMap<>();
     private Map<Automobile, NoleggioStorico> autoNoleggate = new HashMap<>();
-   private Utente utente;
+    private Utente utente;
 
-
-
-    public Utente getUtente() {
-        return utente;
-    }
-
-    public void setUtente(Utente utente) {
-        this.utente = utente;
-    }
-// private final String fileUtenti = "src\\file\\utenti.txt";
 
     private final String fileUtenti = "src" + File.separator + "file" + File.separator + "utenti.txt";
     private final String fileAuto = "src" + File.separator + "file" + File.separator + "auto.txt";
@@ -48,7 +38,9 @@ public class GestioneAutonoleggio {
                 break;
             }
         }
-        if(utente==null) {System.out.println("Utente non trovato");}else{
+        if (utente == null) {
+            System.out.println("Utente non trovato");
+        } else {
             System.out.println("Ciao, " + utente.getNome() + "!");
         }
         return utente;
@@ -228,7 +220,7 @@ public class GestioneAutonoleggio {
                 System.out.println(++index + ". " + entry.getValue().toString().substring(1));
             }
 
-        }else{
+        } else {
             System.out.println("Non ci sono auto noleggiate");
         }
     }
@@ -346,9 +338,7 @@ public class GestioneAutonoleggio {
         }
     }
 
-    // public void aggiungiAuto() { //tutto in salvaFileAuto
-
-    // }
+    // public void aggiungiAuto() {} //tutto in salvaFileAuto
 
     public void cambiaStatoAuto() {
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
@@ -384,6 +374,8 @@ public class GestioneAutonoleggio {
             System.out.println("Non ci sono Clienti");
         }
     }
+
+
 
     public void stampaBatmobili() {
 
@@ -422,7 +414,7 @@ public class GestioneAutonoleggio {
             }
         } while (input != 2 && input != 0);
         if (input == 2) {
-            utente=login();
+            utente = login();
             switch (utente.getRuolo()) {
                 case CLIENTE:
                     do {
@@ -432,7 +424,7 @@ public class GestioneAutonoleggio {
                         if (opzioniCliente.equals(OpzioniCliente.CERCA_PER_MARCA_MODELLO)) cercaAutoMarcaDisp();
                         if (opzioniCliente.equals(OpzioniCliente.VEDI_LISTA)) mostraAutoDisp();
                         if (opzioniCliente.equals(OpzioniCliente.NOLEGGIA_AUTO)) noleggia();
-                    }while (!opzioniCliente.equals(OpzioniCliente.ESCI));
+                    } while (!opzioniCliente.equals(OpzioniCliente.ESCI));
 
                     break;
                 case MANAGER:
@@ -450,7 +442,7 @@ public class GestioneAutonoleggio {
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_CLIENTI)) stampaClienti();
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_UTENTI)) stampaUtenti();
                         if (opzioniManager.equals(OpzioniManager.VEDI_AUTO_NOLEGGIATE)) stampaAutoNoleggiate();
-                    }while (!opzioniManager.equals(OpzioniManager.ESCI));
+                    } while (!opzioniManager.equals(OpzioniManager.ESCI));
 
                     break;
                 case BATMAN:
@@ -459,7 +451,7 @@ public class GestioneAutonoleggio {
                         if (opzioniBatman.equals(OpzioniBatman.AGGIUNGI_BATMOBILE)) aggiungiBatmobile();
                         if (opzioniBatman.equals(OpzioniBatman.RIMUOVI_BATMOBILE)) rimuoviBatmobile();
                         if (opzioniBatman.equals(OpzioniBatman.VEDI_LISTA_BATMOBILI)) stampaBatmobili();
-                    }while (!opzioniBatman.equals(OpzioniBatman.ESCI));
+                    } while (!opzioniBatman.equals(OpzioniBatman.ESCI));
 
                 default:
                     System.out.println("Stai per uscire");
