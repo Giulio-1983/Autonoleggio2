@@ -1,6 +1,8 @@
 import java.time.LocalDateTime;
 
 public class AutoNoleggiabile extends Automobile {
+
+
     private boolean isDisponibile;
     private double costoOrario;
 

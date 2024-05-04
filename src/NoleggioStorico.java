@@ -1,16 +1,37 @@
 import java.time.LocalDateTime;
 
 public class NoleggioStorico {
+    private static Integer numFattura=0;
+    private String targa;
     private String affidatarioEmail;
     private LocalDateTime inizioNoleggio;
     private LocalDateTime fineNoleggio;
     private Double sommaPagata;
 
-    public NoleggioStorico(String affidatarioEmail, LocalDateTime inizioNoleggio, LocalDateTime fineNoleggio, Double sommaPagata) {
+
+    public NoleggioStorico(String targa, String affidatarioEmail, LocalDateTime inizioNoleggio, LocalDateTime fineNoleggio, Double sommaPagata) {
+        numFattura++;
+        this.targa = targa;
         this.affidatarioEmail = affidatarioEmail;
         this.inizioNoleggio = inizioNoleggio;
         this.fineNoleggio = fineNoleggio;
         this.sommaPagata = sommaPagata;
+    }
+
+    public String getTarga() {
+        return targa;
+    }
+
+    public void setTarga(String targa) {
+        this.targa = targa;
+    }
+
+    public static Integer getNumFattura() {
+        return numFattura;
+    }
+
+    public static void setNumFattura(Integer numFattura) {
+        NoleggioStorico.numFattura = numFattura;
     }
 
     public String getAffidatarioEmail() {
@@ -47,6 +68,6 @@ public class NoleggioStorico {
 
     @Override
     public String toString() {
-        return affidatarioEmail +","+ inizioNoleggio +","+ fineNoleggio +","+ sommaPagata;
+        return targa + affidatarioEmail +  inizioNoleggio + fineNoleggio + sommaPagata;
     }
 }

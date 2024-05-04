@@ -13,11 +13,12 @@ import java.util.*;
 import java.io.File;
 
 public class GestioneAutonoleggio {
+
     ConsoleManage cm = new ConsoleManage();
     private Map<String, AutoNoleggiabile> parcoAuto = new HashMap<>();
     private Map<String, Utente> listaUtenti = new HashMap<>();
     private Map<String, Batmobile> listaBatmobili = new HashMap<>();
-    private Map<Automobile, NoleggioStorico> autoNoleggate = new HashMap<>();
+    private Map<Integer, NoleggioStorico> autoNoleggate = new HashMap<>();
     private Utente utente;
 
 
@@ -75,14 +76,15 @@ public class GestioneAutonoleggio {
             BufferedReader breader = new BufferedReader(new FileReader(fileNoleggioStorico));
             while ((linea = breader.readLine()) != null) {
                 String[] datiNoleggio = linea.split(",");
-                if (datiNoleggio.length == 7) {
+                if (datiNoleggio.length == 6) {
+                    if (datiNoleggio[3] != null)
+                        dateTimeInizio = LocalDateTime.parse(datiNoleggio[3], formatter);
                     if (datiNoleggio[4] != null)
-                        dateTimeInizio = LocalDateTime.parse(datiNoleggio[4], formatter);
-                    if (datiNoleggio[5] != null)
-                        dateTimeFine = LocalDateTime.parse(datiNoleggio[5], formatter);
-                    Automobile automobile = new Automobile(datiNoleggio[0].trim(), datiNoleggio[1].trim(), datiNoleggio[2].trim());
-                    NoleggioStorico noleggioStorico = new NoleggioStorico(datiNoleggio[3].trim(), dateTimeInizio, dateTimeFine, Double.parseDouble(datiNoleggio[6].trim()));
-                    autoNoleggate.put(automobile, noleggioStorico);
+                        dateTimeFine = LocalDateTime.parse(datiNoleggio[4], formatter);
+
+                    NoleggioStorico noleggioStorico = new NoleggioStorico(datiNoleggio[1].trim(), datiNoleggio[2].trim(), dateTimeInizio, dateTimeFine, Double.parseDouble(datiNoleggio[5].trim()));
+
+                    autoNoleggate.put(Integer.parseInt(datiNoleggio[0].trim()), noleggioStorico);
                 } else {
                     System.out.println("Inserimento in HashMap autoNoleggiate non è possibile");
                 }
@@ -92,6 +94,7 @@ public class GestioneAutonoleggio {
             System.out.println("Problema di leggere da file");
         }
     }
+
 
     public void caricaFileUtenti() {
         String linea;
@@ -221,7 +224,7 @@ public class GestioneAutonoleggio {
         String linea;
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(fileNoleggioStorico));
-            for (Map.Entry<Automobile, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+            for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 linea = entry.getKey() + "," + entry.getValue() + "\n";
                 br.write(linea);
             }
@@ -268,10 +271,9 @@ public class GestioneAutonoleggio {
         int index = 0;
         if (autoNoleggate.size() > 0) {
             System.out.println("Auto noleggiate");
-            for (Map.Entry<Automobile, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+            for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 System.out.println(++index + ". " + entry.getValue().toString().substring(1));
             }
-
         } else {
             System.out.println("Non ci sono auto noleggiate");
         }
@@ -377,8 +379,8 @@ public class GestioneAutonoleggio {
         //controllo se pagato
         if (costo != null) {
             Automobile automobile = new Automobile(marca, modello, targa);
-            NoleggioStorico noleggioStorico = new NoleggioStorico(utente.getEmail(), inizioDataOra, fineDataOra, costo);
-            autoNoleggate.put(automobile, noleggioStorico);
+            NoleggioStorico noleggioStorico = new NoleggioStorico(targa,utente.getEmail(), inizioDataOra, fineDataOra, costo);
+            autoNoleggate.put(NoleggioStorico.getNumFattura(), noleggioStorico);
             salvaFileAutoNoleggiate();
             System.out.println("Hai noleggiato auto: " + automobile.toString() + ", Costo: " + costo);
         } else {
