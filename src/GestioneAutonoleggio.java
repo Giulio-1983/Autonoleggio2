@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.io.File;
 
@@ -196,7 +197,8 @@ public class GestioneAutonoleggio {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(fileAuto));
             for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
-                linea = entry.getKey() + "," + entry.getValue() + "\n";
+                AutoNoleggiabile auto = entry.getValue();
+                linea = entry.getKey() + "," + auto.getMarca() + "," + auto.getModello() + "," + auto.getTarga() + "," + auto.isDisponibile() + "," + auto.getCostoOrario() + "\n";
                 br.write(linea);
             }
             br.close();
@@ -205,6 +207,7 @@ public class GestioneAutonoleggio {
             System.out.println(e);
         }
     }
+
 
     //metodo di supporto -da chiamare in aggiungiUtente
     public void salvaFileUtenti() {
@@ -297,6 +300,7 @@ public class GestioneAutonoleggio {
                         entry.getValue().getModello().equalsIgnoreCase(modello)) {
                     System.out.println("Lista di auto con marca: " + marca + " e modello: " + modello);
                     System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+
                 } else {
                     System.out.println("Non ci sono auto disponibili con parametri cercati");
                 }
@@ -323,13 +327,13 @@ public class GestioneAutonoleggio {
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(targa)) {
-
-                autoNoleggiabile = new AutoNoleggiabile(entry.getValue().getMarca(), entry.getValue().getModello(),
-                        entry.getValue().getTarga(), entry.getValue().isDisponibile(), entry.getValue().getCostoOrario());
+                autoNoleggiabile = entry.getValue();
+                break;
             }
         }
         return autoNoleggiabile;
     }
+
 
     //return somma pagata
   /*  public Double pagareNoleggio(String targa, Duration durataNoleggio) {
@@ -345,8 +349,8 @@ public class GestioneAutonoleggio {
 
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
 
-    //metodo di supporto da chiamare in noleggia e restuituisci Auto
-    public NoleggioStorico calcolaCosto(String targa) {
+
+    public NoleggioStorico calcolaCosto(AutoNoleggiabile autoNoleggiabile) {
         LocalDate dateInizio = null;
         LocalTime timeInizio = null;
         LocalDate dateFine = null;
@@ -355,75 +359,78 @@ public class GestioneAutonoleggio {
         LocalDateTime fineDataOra = null;
         Duration durata = null;
         Double costo = null;
-        AutoNoleggiabile autoNoleggiabile = null;
         NoleggioStorico noleggioStorico = null;
-        //cerco macchina per targa
-        autoNoleggiabile = cercaAutoPerTarga();
 
-        //se macchina isDisponibile=true->inserisco dataOra inizio con scanner
-        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == true) {
-
-            dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-mm-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con sucesso", 3);
-            LocalTime[] inizioTimeArr = (cm.giveTime("Inserisci un orario del inizio noleggio (hh:mm)", "Non è stato riscontrato come orario",
-                    "Non è stato inserito un orario", 3));
+        // se disponibile
+        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()) {
+            // Start data ora
+            dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
+            LocalTime[] inizioTimeArr = cm.giveTime("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
             if (inizioTimeArr[0].equals(LocalTime.of(00, 01))) {
                 timeInizio = inizioTimeArr[1];
                 System.out.println("L'orario inserito è: " + timeInizio);
             }
             inizioDataOra = dateInizio.atTime(timeInizio);
-            noleggioStorico = new NoleggioStorico(targa, utente.getEmail(), inizioDataOra, fineDataOra, costo);
-
-            //se macchina isDisponibile=false->prendo dataOra inizio dall file autonoleggiate
-        } else if (autoNoleggiabile.isDisponibile() == false) {
-
+            noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utente.getEmail(), inizioDataOra, null, costo);
+        } else if (autoNoleggiabile != null && !autoNoleggiabile.isDisponibile()) {
+            // se non disponibile- prendo auto per targa
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
-                if (entry.getValue().getTarga().equalsIgnoreCase(targa)) {
+                if (entry.getValue().getTarga().equalsIgnoreCase(autoNoleggiabile.getTarga())) {
                     inizioDataOra = entry.getValue().getInizioNoleggio();
                     noleggioStorico = new NoleggioStorico(entry.getValue().getTarga().trim(), entry.getValue().getAffidatarioEmail().trim(), inizioDataOra,
-                            entry.getValue().getFineNoleggio(), entry.getValue().getSommaPagata());
+                            entry.getValue().getFineNoleggio(),entry.getValue().getSommaPagata());
+                    break;
                 }
             }
         } else {
-            System.out.println("targa non trovata, impossibile contare il costo");
+            System.out.println("Auto non trovata o non disponibile, impossibile calcolare il costo.");
         }
-        //inserisco dataFine Noleggio
-        dateFine = cm.dammiData("Inserisci la data fine noleggio : dd-mm-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con sucesso", 3);
-        LocalTime[] fineTimeArr = (cm.giveTime("Inserisci un orario della fine di noleggio (hh:mm)", "Non è stato riscontrato come orario",
-                "Non è stato inserito un orario", 3));
+
+        //fine data ora
+        dateFine = cm.dammiData("Inserisci la data fine noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
+        LocalTime[] fineTimeArr = cm.giveTime("Inserisci un orario della fine di noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
         if (fineTimeArr[0].equals(LocalTime.of(00, 01))) {
-            timeFine = fineTimeArr[1];
+           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            timeFine = fineTimeArr[1].truncatedTo(ChronoUnit.MINUTES);
             System.out.println("L'orario inserito è: " + timeFine);
         }
-        fineDataOra= dateFine.atTime(timeFine);
-        durata = Duration.between(inizioDataOra, fineDataOra);
-        costo=autoNoleggiabile.getCostoOrario()*durata.toHours();
-        noleggioStorico.setFineNoleggio(fineDataOra);
-        noleggioStorico.setSommaPagata(costo);
+        fineDataOra = dateFine.atTime(timeFine).truncatedTo(ChronoUnit.MINUTES);
+
+
+        // Calcolo durata e costo
+        if (inizioDataOra != null && fineDataOra != null) {
+            durata = Duration.between(inizioDataOra, fineDataOra);
+            costo = autoNoleggiabile.getCostoOrario() * durata.toHours();
+            noleggioStorico.setFineNoleggio(fineDataOra.truncatedTo(ChronoUnit.MINUTES));
+            noleggioStorico.setSommaPagata(costo);
+        }
+
         return noleggioStorico;
     }
+
+
+
     public void noleggia() {
-        Double costo = null;
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
-        if(autoNoleggiabile!=null){
-            NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile.getTarga());
-            costo = noleggioStorico.getSommaPagata();
-            //controllo se pagato
+        if(autoNoleggiabile != null){
+            NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
+            Double costo = noleggioStorico.getSommaPagata();
+            // Control if payment is made
             if (costo != null) {
-                //  Automobile automobile = new Automobile(marca, modello, targa);
                 autoNoleggate.put(NoleggioStorico.getNumFattura(), noleggioStorico);
                 autoNoleggiabile.setDisponibile(false);
-                parcoAuto.put(autoNoleggiabile.getTarga(),autoNoleggiabile);
+                parcoAuto.put(autoNoleggiabile.getTarga(), autoNoleggiabile);
                 salvaFileAutoNoleggiate();
                 salvaFileAuto();
-                System.out.println("Hai noleggiato auto: " + autoNoleggiabile.getMarca() + " " + autoNoleggiabile.getModello()+ ", Costo: " + costo);
+                System.out.println("Hai noleggiato auto: " + autoNoleggiabile.getMarca() + " " + autoNoleggiabile.getModello() + ", Costo: " + costo);
             } else {
                 System.out.println("Noleggio NON è effettuato");
             }
-        }else{
-            System.out.println("Auto non è trovato");
+        } else {
+            System.out.println("Auto non trovata");
         }
-
     }
+
 
     public void rimuoviAuto() {
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
@@ -440,11 +447,37 @@ public class GestioneAutonoleggio {
     // public void aggiungiAuto() {} //tutto in salvaFileAuto
 
     public void restituisciAuto() {
-      //  String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
-        AutoNoleggiabile autoNoleggiabile=cercaAutoPerTarga();
-        NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile.getTarga());
-        autoNoleggiabile.setDisponibile(true);
+        AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
+        if (autoNoleggiabile != null) {
+            NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
+            if (noleggioStorico != null) {
+                NoleggioStorico existingNoleggioStorico = null;
+                for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+                    if (entry.getValue().getTarga().equals(autoNoleggiabile.getTarga())) {
+                        existingNoleggioStorico = entry.getValue();
+                        break;
+                    }
+                }
+                if (existingNoleggioStorico != null) {
+                    existingNoleggioStorico.setFineNoleggio(LocalDateTime.now());
+                    existingNoleggioStorico.setSommaPagata(noleggioStorico.getSommaPagata());
+                    autoNoleggiabile.setDisponibile(true);
+                    salvaFileAutoNoleggiate();
+                    salvaFileAuto();
+                    System.out.println("Auto restituita con successo");
+                } else {
+                    System.out.println("Errore: No entry found for the returned auto.");
+                }
+            } else {
+                System.out.println("Errore nel calcolo del costo.");
+            }
+        } else {
+            System.out.println("Auto non trovata.");
+        }
     }
+
+
+
 
     public void cambiaStatoAuto() {
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);

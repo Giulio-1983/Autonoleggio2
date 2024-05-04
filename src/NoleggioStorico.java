@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class NoleggioStorico {
     private static Integer numFattura=0;
@@ -68,6 +69,9 @@ public class NoleggioStorico {
 
     @Override
     public String toString() {
-        return targa +","+ affidatarioEmail+","+  inizioNoleggio +","+fineNoleggio +","+sommaPagata;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String inizioFormatted = inizioNoleggio.format(formatter);
+        String fineFormatted = fineNoleggio.format(formatter);
+        return targa + "," + affidatarioEmail + "," + inizioFormatted + "," + fineFormatted + "," + sommaPagata;
     }
 }
