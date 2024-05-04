@@ -1,2 +1,6 @@
-SS444SS,marca1,modello1,SS444SS,batmobile1, accessore1
-BB444BB,marca2,modello2,BB444BB,DD111SSbatmobile2, accessore2
+BBB111,Batmobile,Modello X,BBB111,Batmobile 1,Blindatura corazzata;Lanciarazzi
+BBB222,Batmobile,Modello Y,BBB222,Batmobile 2,Modalità stealth;Seggiolino eiettabile
+BBB333,Batmobile,Modello Z,BBB333,Batmobile 3,Motore a reazione;Lanciamissili
+BBB444,Batmobile,Modello A,BBB444,Batmobile 4,Sospensioni potenziate;Sparacqua integrato
+BBB555,Batmobile,Modello B,BBB555,Batmobile 5,Telecamera termica;Cappa fumogena
+BBB666,Batmobile,Modello C,BBB666,Batmobile 6,Moduli di comunicazione avanzati;Schermo antiproiettile
