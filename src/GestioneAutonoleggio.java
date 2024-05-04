@@ -311,8 +311,6 @@ public class GestioneAutonoleggio {
 
     }
 
-
-
     public void mostraAuto() {
         int index = 0;
         if (parcoAuto.size() > 0) {
@@ -322,6 +320,7 @@ public class GestioneAutonoleggio {
             }
         }
     }
+
     public AutoNoleggiabile cercaAutoPerTarga() {
         AutoNoleggiabile autoNoleggiabile = null;
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
@@ -334,18 +333,6 @@ public class GestioneAutonoleggio {
         return autoNoleggiabile;
     }
 
-
-    //return somma pagata
-  /*  public Double pagareNoleggio(String targa, Duration durataNoleggio) {
-        Double costoNoleggio = null;
-
-        for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
-            if (entry.getKey().equalsIgnoreCase(targa)) {
-                costoNoleggio = entry.getValue().getCostoOrario() * durataNoleggio.toHours();
-            }
-        }
-        return costoNoleggio;
-    }*/
 
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
 
@@ -378,7 +365,7 @@ public class GestioneAutonoleggio {
                 if (entry.getValue().getTarga().equalsIgnoreCase(autoNoleggiabile.getTarga())) {
                     inizioDataOra = entry.getValue().getInizioNoleggio();
                     noleggioStorico = new NoleggioStorico(entry.getValue().getTarga().trim(), entry.getValue().getAffidatarioEmail().trim(), inizioDataOra,
-                            entry.getValue().getFineNoleggio(),entry.getValue().getSommaPagata());
+                            entry.getValue().getFineNoleggio(), entry.getValue().getSommaPagata());
                     break;
                 }
             }
@@ -390,7 +377,7 @@ public class GestioneAutonoleggio {
         dateFine = cm.dammiData("Inserisci la data fine noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
         LocalTime[] fineTimeArr = cm.giveTime("Inserisci un orario della fine di noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
         if (fineTimeArr[0].equals(LocalTime.of(00, 01))) {
-           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             timeFine = fineTimeArr[1].truncatedTo(ChronoUnit.MINUTES);
             System.out.println("L'orario inserito è: " + timeFine);
         }
@@ -409,10 +396,9 @@ public class GestioneAutonoleggio {
     }
 
 
-
     public void noleggia() {
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
-        if(autoNoleggiabile != null){
+        if (autoNoleggiabile != null) {
             NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
             Double costo = noleggioStorico.getSommaPagata();
             // Control if payment is made
@@ -448,35 +434,28 @@ public class GestioneAutonoleggio {
 
     public void restituisciAuto() {
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
-        if (autoNoleggiabile != null) {
-            NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
-            if (noleggioStorico != null) {
-                NoleggioStorico existingNoleggioStorico = null;
-                for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
-                    if (entry.getValue().getTarga().equals(autoNoleggiabile.getTarga())) {
-                        existingNoleggioStorico = entry.getValue();
-                        break;
-                    }
+        NoleggioStorico noleggioStorico=null;
+        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
+           noleggioStorico = calcolaCosto(autoNoleggiabile);
+          //  NoleggioStorico noleggioStoricoOld=null;
+
+            for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+                if (entry.getValue().getTarga().equals(autoNoleggiabile.getTarga())) {
+                    NoleggioStorico noleggioStoricoOld = entry.getValue();
+                    noleggioStoricoOld.setFineNoleggio(noleggioStorico.getFineNoleggio());
+                    noleggioStoricoOld.setSommaPagata(noleggioStorico.getSommaPagata());
+                    break;
                 }
-                if (existingNoleggioStorico != null) {
-                    existingNoleggioStorico.setFineNoleggio(LocalDateTime.now());
-                    existingNoleggioStorico.setSommaPagata(noleggioStorico.getSommaPagata());
-                    autoNoleggiabile.setDisponibile(true);
-                    salvaFileAutoNoleggiate();
-                    salvaFileAuto();
-                    System.out.println("Auto restituita con successo");
-                } else {
-                    System.out.println("Errore: No entry found for the returned auto.");
-                }
-            } else {
-                System.out.println("Errore nel calcolo del costo.");
             }
+                autoNoleggiabile.setDisponibile(true);
+                salvaFileAutoNoleggiate();
+                salvaFileAuto();
+                System.out.println("Auto restituita con successo");
+
         } else {
             System.out.println("Auto non trovata.");
         }
     }
-
-
 
 
     public void cambiaStatoAuto() {
@@ -633,7 +612,7 @@ public class GestioneAutonoleggio {
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_CLIENTI)) stampaClienti();
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_UTENTI)) stampaUtenti();
                         if (opzioniManager.equals(OpzioniManager.VEDI_AUTO_NOLEGGIATE)) stampaAutoNoleggiate();
-                        if(opzioniManager.equals(OpzioniManager.RESTITUISCI_AUTO)) restituisciAuto();
+                        if (opzioniManager.equals(OpzioniManager.RESTITUISCI_AUTO)) restituisciAuto();
                     } while (!opzioniManager.equals(OpzioniManager.ESCI));
 
                     break;

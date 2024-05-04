@@ -67,11 +67,11 @@ public class NoleggioStorico {
         this.sommaPagata = sommaPagata;
     }
 
-    @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String inizioFormatted = inizioNoleggio.format(formatter);
         String fineFormatted = fineNoleggio.format(formatter);
-        return targa + "," + affidatarioEmail + "," + inizioFormatted + "," + fineFormatted + "," + sommaPagata;
+        String sommaPagataFormatted = String.format("%.1f", sommaPagata); // Format sommaPagata as a string with a decimal point
+        return targa + "," + affidatarioEmail + "," + inizioFormatted + "," + fineFormatted + "," + sommaPagataFormatted;
     }
 }
