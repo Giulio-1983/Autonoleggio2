@@ -11,6 +11,7 @@ public enum OpzioniManager {
     CERCA_PER_MARCA_MODELLO("Cerca auto disponibili per marca e modello"),
     VEDI_LISTA("Vedi lista tutti auto disponibili"),
     NOLEGGIA_AUTO("Noleggia auto"),
+    RESTITUISCI_AUTO("Restituisci auto"),
     VEDI_AUTO_NOLEGGIATE("Vedi lista di auto noleggiate"),
     ESCI("Esci");
 

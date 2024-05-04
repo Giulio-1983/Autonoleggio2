@@ -68,6 +68,6 @@ public class NoleggioStorico {
 
     @Override
     public String toString() {
-        return targa + affidatarioEmail +  inizioNoleggio + fineNoleggio + sommaPagata;
+        return targa +","+ affidatarioEmail+","+  inizioNoleggio +","+fineNoleggio +","+sommaPagata;
     }
 }
