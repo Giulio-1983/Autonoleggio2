@@ -21,6 +21,9 @@ public class Batmobile extends Automobile{
 	public void setAccessori(String accessori) {
 		this.accessori = accessori;
 	}
-	
 
+	@Override
+	public String toString() {
+		return super.toString()+","+nome +","+ accessori;
+	}
 }

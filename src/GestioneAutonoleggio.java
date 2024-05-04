@@ -57,7 +57,7 @@ public class GestioneAutonoleggio {
                     AutoNoleggiabile autoNoleggiabile = new AutoNoleggiabile(datiAuto[1].trim(), datiAuto[2].trim(), datiAuto[3].trim(), Boolean.valueOf(datiAuto[4].trim()), Double.parseDouble(datiAuto[5].trim()));
                     parcoAuto.put(datiAuto[0], autoNoleggiabile);
                 } else {
-                    System.out.println("Inserimento in HashMap non è possibile");
+                    System.out.println("Inserimento in HashMap parcoAuto non è possibile");
                 }
             }
             breader.close();
@@ -68,23 +68,23 @@ public class GestioneAutonoleggio {
 
     public void caricaFileNoleggio() {
         String linea;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime dateTimeInizio = null;
         LocalDateTime dateTimeFine = null;
         try {
-            BufferedReader breader = new BufferedReader(new FileReader(fileAuto));
+            BufferedReader breader = new BufferedReader(new FileReader(fileNoleggioStorico));
             while ((linea = breader.readLine()) != null) {
                 String[] datiNoleggio = linea.split(",");
-                if (datiNoleggio.length == 10) {
+                if (datiNoleggio.length == 7) {
                     if (datiNoleggio[4] != null)
-                        dateTimeInizio = LocalDateTime.parse(datiNoleggio[7], formatter);
+                        dateTimeInizio = LocalDateTime.parse(datiNoleggio[4], formatter);
                     if (datiNoleggio[5] != null)
-                        dateTimeFine = LocalDateTime.parse(datiNoleggio[8], formatter);
+                        dateTimeFine = LocalDateTime.parse(datiNoleggio[5], formatter);
                     Automobile automobile = new Automobile(datiNoleggio[0].trim(), datiNoleggio[1].trim(), datiNoleggio[2].trim());
                     NoleggioStorico noleggioStorico = new NoleggioStorico(datiNoleggio[3].trim(), dateTimeInizio, dateTimeFine, Double.parseDouble(datiNoleggio[6].trim()));
                     autoNoleggate.put(automobile, noleggioStorico);
                 } else {
-                    System.out.println("Inserimento in HashMap non è possibile");
+                    System.out.println("Inserimento in HashMap autoNoleggiate non è possibile");
                 }
             }
             breader.close();
@@ -103,7 +103,7 @@ public class GestioneAutonoleggio {
                     Utente utente = new Utente(datiUtenti[1].trim(), datiUtenti[2].trim(), datiUtenti[3].trim(), datiUtenti[4].trim(), Ruoli.valueOf(datiUtenti[5].trim()));
                     listaUtenti.put(datiUtenti[0].trim(), utente);
                 } else {
-                    System.out.println("Inserimento in HashMap non è possibile");
+                    System.out.println("Inserimento in HashMap listaUtenti non è possibile");
                 }
             }
             breader.close();
@@ -111,8 +111,27 @@ public class GestioneAutonoleggio {
             System.out.println("Problema di leggere da file");
         }
     }
+    public void caricaFileBatmobili() {
+        String linea;
+        try {
+            BufferedReader breader = new BufferedReader(new FileReader(fileBatmoboli));
+            while ((linea = breader.readLine()) != null) {
+                String[] datiAuto = linea.split(",");
+                if (datiAuto.length == 6) {
+                    Batmobile batmobile = new Batmobile(datiAuto[1].trim(), datiAuto[2].trim(), datiAuto[3].trim(), datiAuto[4].trim(), datiAuto[5].trim());
+                    listaBatmobili.put(datiAuto[0], batmobile);
+                } else {
+                    System.out.println("Inserimento in HashMap listaBatmobili non è possibile");
+                }
+            }
+            breader.close();
+        } catch (IOException e) {
+            System.out.println("Problema di leggere da file");
+        }
 
+    }
 
+    //popola hashmap e chiama metodo salvaFile
     public void aggiungiAuto() {
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
@@ -137,7 +156,7 @@ public class GestioneAutonoleggio {
         salvaFileAuto();
     }
 
-
+//popola hashmap e chiama metodo salvaFile
     public void aggiungiUtente() {
         String[] nomeArr = cm.giveString("Inserisci nome", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String nome = null;
@@ -423,7 +442,7 @@ public class GestioneAutonoleggio {
         if (listaBatmobili.size() > 0) {
             System.out.println("Batmobili");
             for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
-                System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+                System.out.println(++index + ". " + entry.getValue().toString());
             }
 
         } else {
@@ -474,25 +493,7 @@ public class GestioneAutonoleggio {
         salvaFileBatmobili();
     }
 
-    public void caricaFileBatmobili() {
-        String linea;
-        try {
-            BufferedReader breader = new BufferedReader(new FileReader(fileBatmoboli));
-            while ((linea = breader.readLine()) != null) {
-                String[] datiAuto = linea.split(",");
-                if (datiAuto.length == 6) {
-                    Batmobile batmobile = new Batmobile(datiAuto[1].trim(), datiAuto[2].trim(), datiAuto[3].trim(), datiAuto[4].trim(), datiAuto[5].trim());
-                    listaBatmobili.put(datiAuto[0], batmobile);
-                } else {
-                    System.out.println("Inserimento in HashMap non è possibile");
-                }
-            }
-            breader.close();
-        } catch (IOException e) {
-            System.out.println("Problema di leggere da file");
-        }
 
-    }
 
     public void salvaFileBatmobili() {
         String linea;
