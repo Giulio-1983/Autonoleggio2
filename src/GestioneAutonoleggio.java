@@ -112,7 +112,7 @@ public class GestioneAutonoleggio {
         }
     }
 
-    //metodo di supporto -da chiamare in salvaFileAuto
+
     public void aggiungiAuto() {
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
@@ -137,7 +137,7 @@ public class GestioneAutonoleggio {
         salvaFileAuto();
     }
 
-    //metodo di supporto -da chiamare in salvaFileUtenti
+
     public void aggiungiUtente() {
         String[] nomeArr = cm.giveString("Inserisci nome", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String nome = null;
@@ -167,7 +167,7 @@ public class GestioneAutonoleggio {
         }
         salvaFileUtenti();
     }
-
+    //metodo di supporto -da chiamare in aggiungiAuto
     public void salvaFileAuto() {
         String linea;
         try {
@@ -182,7 +182,7 @@ public class GestioneAutonoleggio {
             System.out.println(e);
         }
     }
-
+    //metodo di supporto -da chiamare in aggiungiUtente
     public void salvaFileUtenti() {
         String linea;
         try {
@@ -197,6 +197,7 @@ public class GestioneAutonoleggio {
             System.out.println(e);
         }
     }
+    //metodo di supporto -da chiamare in noleggia
     public void salvaFileAutoNoleggiate(){
         String linea;
         try {
