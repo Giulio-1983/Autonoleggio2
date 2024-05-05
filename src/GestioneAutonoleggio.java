@@ -388,7 +388,6 @@ public class GestioneAutonoleggio {
 
             noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
         } else if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
-            System.out.println("AUTO NON DISP");
             // se non disponibile- prendo auto per targa
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 if (entry.getValue().getTarga().equalsIgnoreCase(autoNoleggiabile.getTarga())) {
