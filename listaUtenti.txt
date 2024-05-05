@@ -1,0 +1,47 @@
+Giovanni, Rossi, giovanni.rossi@example.com, Password123, Manager
+Maria, Bianchi, maria.bianchi@example.com, SecurePass456, Cliente
+Luca, Verdi, luca.verdi@example.com, SecretPass789, Cliente
+Chiara, Neri, chiara.neri@example.com, Password1234, Cliente
+Andrea, Russo, andrea.russo@example.com, StrongPass123, Cliente
+Sara, Galli, sara.galli@example.com, SecurePass789, Cliente
+Marco, Esposito, marco.esposito@example.com, SecretPass123, Cliente
+Laura, Conti, laura.conti@example.com, Password456, Cliente
+Matteo, Ferrari, matteo.ferrari@example.com, StrongPass456, Cliente
+Alessia, Moretti, alessia.moretti@example.com, SecurePass123, Cliente
+Davide, Barbieri, davide.barbieri@example.com, Password789, Cliente
+Giulia, Romano, giulia.romano@example.com, SecretPass456, Cliente
+Paolo, Gatti, paolo.gatti@example.com, StrongPass789, Cliente
+Elena, Colombo, elena.colombo@example.com, Password12345, Cliente
+Simone, Fontana, simone.fontana@example.com, SecurePass7890, Cliente
+Valentina, Marino, valentina.marino@example.com, SecretPass7890, Cliente
+Federico, Monti, federico.monti@example.com, StrongPass1234, Cliente
+Roberta, De Luca, roberta.deluca@example.com, Password678, Cliente
+Michele, Ricci, michele.ricci@example.com, SecurePass567, Cliente
+Chiara, Barone, chiara.barone@example.com, SecretPass890, Cliente
+Luigi, Greco, luigi.greco@example.com, StrongPass567, Cliente
+Anna, Moretti, anna.moretti@example.com, Password890, Cliente
+Gianluca, Fiore, gianluca.fiore@example.com, SecurePass890, Cliente
+Silvia, Caruso, silvia.caruso@example.com, SecretPass567, Cliente
+Andrea, De Angelis, andrea.deangelis@example.com, StrongPass890, Cliente
+Eleonora, Palumbo, eleonora.palumbo@example.com, Password567, Cliente
+Daniele, Bruno, daniele.bruno@example.com, SecurePass12345, Cliente
+Roberto, Serra, roberto.serra@example.com, SecretPass678, Cliente
+Giorgia, Riva, giorgia.riva@example.com, StrongPass5678, Cliente
+Fabio, Milani, fabio.milani@example.com, Password345, Cliente
+Martina, De Rosa, martina.derosa@example.com, SecurePass5678, Cliente
+Nicola, Pellegrini, nicola.pellegrini@example.com, SecretPass345, Cliente
+Ilaria, Gallo, ilaria.gallo@example.com, StrongPass345, Cliente
+Antonio, Piras, antonio.piras@example.com, Password5678, Cliente
+Cristina, Bernardi, cristina.bernardi@example.com, SecurePass345, Cliente
+Massimo, Villa, massimo.villa@example.com, SecretPass5678, Cliente
+Elisa, Marini, elisa.marini@example.com, StrongPass4567, Cliente
+Riccardo, Barbieri, riccardo.barbieri@example.com, Password4567, Cliente
+Alessandra, Leoni, alessandra.leoni@example.com, SecurePass4567, Cliente
+Paolo, Bruno, paolo.bruno@example.com, SecretPass4567, Cliente
+Veronica, Galli, veronica.galli@example.com, StrongPass6789, Cliente
+Andrea, Fabbri, andrea.fabbri@example.com, Password6789, Cliente
+Francesca, Giordano, francesca.giordano@example.com, SecurePass6789, Cliente
+Gabriele, Pagano, gabriele.pagano@example.com, SecretPass6789, Cliente
+Sofia, Marino, sofia.marino@example.com, StrongPass7890, Cliente
+Giuseppe, Conti, giuseppe.conti@example.com, Password7890, Cliente
+Caterina, Montanari, caterina.montanari@example.com, SecurePass7890, Cliente

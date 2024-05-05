@@ -1,0 +1,11 @@
+BMW, Serie 3, UV678WX, false, 15.0, laura.bianchi@example.com
+Mercedes-Benz, Classe A, YZ901AB, true, 14.5, null
+Ford, Focus, EF456GH, true, 12.75, null
+Renault, Clio, MN012OP, false, 9.99, mario.rossi@example.com
+Volkswagen, Golf, IJ789KL, false, 11.25, giovanni.rossi@example.com
+Hyundai, i20, FG567HI, true, 10.75, null
+basula, ciaone, JK890LM, false, 90.0, maria.bianchi@example.com
+Fiat, 500, QR345ST, true, 9.0, null
+Audi, A3, BC234DE, false, 13.25, giuseppe.verdi@example.com
+Toyota, Yaris, AB123CD, true, 10.5, null
+Bella, ZIO, KT458GH, true, 100.0, null
