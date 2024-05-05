@@ -4,6 +4,7 @@ import enums.OpzioniManager;
 import enums.Ruoli;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -204,7 +205,7 @@ public class GestioneAutonoleggio {
                 br.write(linea);
             }
             br.close();
-            System.out.println("Il file è stato aggiornato");
+            System.out.println("Il file auto è stato aggiornato");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -221,7 +222,7 @@ public class GestioneAutonoleggio {
                 br.write(linea);
             }
             br.close();
-            System.out.println("Il file è stato aggiornato");
+            System.out.println("Il file utenti è stato aggiornato");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -237,7 +238,7 @@ public class GestioneAutonoleggio {
                 br.write(linea);
             }
             br.close();
-            System.out.println("Il file è stato aggiornato");
+            System.out.println("Il file autonoleggiate è stato aggiornato");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -288,6 +289,7 @@ public class GestioneAutonoleggio {
     }
 
     public void cercaAutoMarcaDisp() {
+        int count=0;
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
         if (marcaArr[0].equals("1")) marca = marcaArr[1];
@@ -302,15 +304,14 @@ public class GestioneAutonoleggio {
                         entry.getValue().getModello().equalsIgnoreCase(modello)) {
                     System.out.println("Lista di auto con marca: " + marca + " e modello: " + modello);
                     System.out.println(++index + ". " + entry.getValue().toString().substring(1));
+                    count++;
 
-                } else {
-                    System.out.println("Non ci sono auto disponibili con parametri cercati");
                 }
             }
+            if (count==0) System.out.println("Non ci sono auto disponibili con parametri cercati");
         } else {
-            System.out.println("Non possibile mostrare auto");
+            System.out.println("Non possibile mostrare auto, il parcoAuto è vuoto");
         }
-
     }
 
     public void mostraAuto() {
@@ -364,7 +365,6 @@ public class GestioneAutonoleggio {
 
         // se disponibile
         if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == true) {
-            System.out.println("AUTO DISP");
             // Start data ora
             dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
             LocalTime[] inizioTimeArr = cm.giveTime("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
@@ -413,6 +413,7 @@ public class GestioneAutonoleggio {
 
 
     public void noleggia() {
+        mostraAutoDisp();
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
         if (autoNoleggiabile != null) {
             NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
@@ -500,13 +501,15 @@ public class GestioneAutonoleggio {
 
     public void vediNoleggiDelCliente(){
         System.out.println("Tuoi noleggi attivi: ");
+        int count=0;
         for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
             if (entry.getValue().getAffidatarioEmail().equalsIgnoreCase(utenteAttivo.getEmail())) {
                 System.out.println("Numero fattura: "+entry.getKey() +", Noleggio: "+ entry.getValue());
-            }else{
-                System.out.println("Non hai noleggi attivi");
+                count++;
             }
         }
+        if (count==0)
+            System.out.println("Noi hai noleggi attivi");
     }
 
     //vengono chiamati metodi di supporto vediNoleggiDelCliente e cercaNoleggioPerFattura
@@ -518,12 +521,14 @@ public class GestioneAutonoleggio {
         ||utenteAttivo.getRuolo().equals(Ruoli.MANAGER)) {
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 if (entry.getValue() == noleggioStorico) {
+                    parcoAuto.get(noleggioStorico.getTarga()).setDisponibile(true);
+                    salvaFileAuto();
                     autoNoleggate.remove(entry.getKey());
-                    System.out.println("Noleggio con numFattura " + noleggioStorico.getNumFattura() + " annullato");
+                    salvaFileAutoNoleggiate();
+                    System.out.println("Noleggio di auto " + noleggioStorico.getTarga() + " annullato");
                     break;
                 }
             }
-            System.out.println("Noleggio non trovato");
         } else {
             System.out.println("Noleggio non trovato");
         }
