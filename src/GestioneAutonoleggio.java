@@ -96,6 +96,7 @@ public class GestioneAutonoleggio {
         }
     }
 
+
     public void caricaFileUtenti() {
         String linea;
         try {
@@ -336,7 +337,17 @@ public class GestioneAutonoleggio {
 
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
 
-
+    public boolean controllaData(LocalDateTime inizioDataOra, LocalDateTime fineDataOra, String targa) {
+        for (NoleggioStorico noleggio : autoNoleggate.values()) {
+            // Controllo se auto e occupata in range date inserite
+            if (noleggio.getTarga().equalsIgnoreCase(targa) &&
+                    ((inizioDataOra.isAfter(noleggio.getInizioNoleggio()) && inizioDataOra.isBefore(noleggio.getFineNoleggio())) ||
+                            (fineDataOra.isAfter(noleggio.getInizioNoleggio()) && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
+                return false;
+            }
+        }
+        return true;
+    }
     public NoleggioStorico calcolaCosto(AutoNoleggiabile autoNoleggiabile) {
         LocalDate dateInizio = null;
         LocalTime timeInizio = null;
@@ -401,14 +412,19 @@ public class GestioneAutonoleggio {
         if (autoNoleggiabile != null) {
             NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
             Double costo = noleggioStorico.getSommaPagata();
-            // Control if payment is made
+            // Controllo pagamento finto
             if (costo != null) {
-                autoNoleggate.put(NoleggioStorico.getNumFattura(), noleggioStorico);
-                autoNoleggiabile.setDisponibile(false);
-                parcoAuto.put(autoNoleggiabile.getTarga(), autoNoleggiabile);
-                salvaFileAutoNoleggiate();
-                salvaFileAuto();
-                System.out.println("Hai noleggiato auto: " + autoNoleggiabile.getMarca() + " " + autoNoleggiabile.getModello() + ", Costo: " + costo);
+                // Controllo disponibilita in data inserita
+                if (controllaData(noleggioStorico.getInizioNoleggio(), noleggioStorico.getFineNoleggio(), autoNoleggiabile.getTarga())) {
+                    autoNoleggate.put(NoleggioStorico.getNumFattura(), noleggioStorico);
+                    autoNoleggiabile.setDisponibile(false);
+                    parcoAuto.put(autoNoleggiabile.getTarga(), autoNoleggiabile);
+                    salvaFileAutoNoleggiate();
+                    salvaFileAuto();
+                    System.out.println("Hai noleggiato auto: " + autoNoleggiabile.getMarca() + " " + autoNoleggiabile.getModello() + ", Costo: " + costo);
+                } else {
+                    System.out.println("Auto non disponibile durante questo periodo");
+                }
             } else {
                 System.out.println("Noleggio NON è effettuato");
             }

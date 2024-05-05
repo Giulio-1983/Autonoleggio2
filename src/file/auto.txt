@@ -8,7 +8,7 @@ BBB000,Honda,Civic,BBB000,false,4.0
 NNN444,Chevrolet,Cruze,NNN444,false,7.5
 RRR888,Mazda,6,RRR888,false,7.0
 CCC333,Ford,Fusion,CCC333,false,3.5
-QQQ777,Subaru,Legacy,QQQ777,true,8.75
+QQQ777,Subaru,Legacy,QQQ777,false,8.75
 PPP666,Hyundai,Sonata,PPP666,true,4.0
 KKK111,Toyota,Camry,KKK111,true,6.0
 EEE555,Nissan,Altima,EEE555,false,5.25
