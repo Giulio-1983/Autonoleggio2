@@ -20,7 +20,7 @@ public class GestioneAutonoleggio {
     private Map<String, Utente> listaUtenti = new HashMap<>();
     private Map<String, Batmobile> listaBatmobili = new HashMap<>();
     private Map<Integer, NoleggioStorico> autoNoleggate = new HashMap<>();
-    private Utente utente=null;
+    private Utente utenteAttivo=null;
 
 
     private final String fileUtenti = "src" + File.separator + "file" + File.separator + "utenti.txt";
@@ -37,14 +37,14 @@ public class GestioneAutonoleggio {
         String psw = cm.dammiPassword("Inserisci password", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Utente ut : listaUtenti.values()) {
             if (ut.getEmail().equals(mail.trim()) && ut.getPassword().equals(psw.trim())) {
-                utente = ut;
+                utenteAttivo = ut;
                 break;
             }
         }
-        if (utente == null) {
+        if (utenteAttivo == null) {
             System.out.println("Utente non trovato");
         } else {
-            System.out.println("Ciao, " + utente.getNome() + "!");
+            System.out.println("Ciao, " + utenteAttivo.getNome() + "!");
         }
 
     }
@@ -358,7 +358,7 @@ public class GestioneAutonoleggio {
                 System.out.println("L'orario inserito è: " + timeInizio);
             }
             inizioDataOra = dateInizio.atTime(timeInizio);
-            noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utente.getEmail(), inizioDataOra, null, costo);
+            noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
         } else if (autoNoleggiabile != null && !autoNoleggiabile.isDisponibile()) {
             // se non disponibile- prendo auto per targa
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
@@ -584,7 +584,7 @@ public class GestioneAutonoleggio {
         } while (input != 2 && input != 0);
         if (input == 2) {
             login();
-            switch (utente.getRuolo()) {
+            switch (utenteAttivo.getRuolo()) {
                 case CLIENTE:
                     do {
                         opzioniCliente = cm.stampaOpzioniCliente();

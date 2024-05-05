@@ -1,4 +1,4 @@
-MMM333,Ford,Focus,MMM333,true,3.0
+MMM333,Ford,Focus,MMM333,false,3.0
 GGG777,Subaru,Impreza,GGG777,true,6.25
 TTT000,Volkswagen,Passat,TTT000,false,6.5
 LLL222,Honda,Accord,LLL222,false,5.25

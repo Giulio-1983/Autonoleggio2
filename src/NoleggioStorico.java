@@ -71,7 +71,8 @@ public class NoleggioStorico {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String inizioFormatted = inizioNoleggio.format(formatter);
         String fineFormatted = fineNoleggio.format(formatter);
-        String sommaPagataFormatted = String.format("%.1f", sommaPagata); // Format sommaPagata as a string with a decimal point
+        // Format sommaPagata con . come divisore
+        String sommaPagataFormatted = String.format("%.2f", sommaPagata).replace(",", ".");
         return targa + "," + affidatarioEmail + "," + inizioFormatted + "," + fineFormatted + "," + sommaPagataFormatted;
     }
 }
