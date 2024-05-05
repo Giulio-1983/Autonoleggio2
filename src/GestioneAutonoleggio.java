@@ -325,6 +325,20 @@ public class GestioneAutonoleggio {
         }
     }
 
+
+    public void cercaAutoDispFuturo(LocalDateTime inizioDataOra, LocalDateTime fineDataOra) {
+        System.out.println("Elenco di auto disponibili per le date inserite");
+        for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+            if (inizioDataOra.isBefore(entry.getValue().getInizioNoleggio())
+                    || inizioDataOra.isAfter(entry.getValue().getFineNoleggio())
+                    &&fineDataOra.isBefore(entry.getValue().getInizioNoleggio())
+                    ||fineDataOra.isAfter(entry.getValue().getFineNoleggio())){
+                System.out.println(entry.getValue());
+            }
+        }
+
+    }
+
     public AutoNoleggiabile cercaAutoPerTarga() {
         AutoNoleggiabile autoNoleggiabile = null;
         String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
@@ -340,23 +354,50 @@ public class GestioneAutonoleggio {
 
     //metodo di suppotro per chiamare in nolegggia
     public boolean controllaData(LocalDateTime inizioDataOra, LocalDateTime fineDataOra, String targa) {
-        //controllo se datae Ora non in passato
-        if (inizioDataOra.isAfter(LocalDateTime.now())) {
-            for (NoleggioStorico noleggio : autoNoleggate.values()) {
-                // Controllo se auto e occupata in range date inserite
-                if (noleggio.getTarga().equalsIgnoreCase(targa) &&
-                        ((inizioDataOra.isAfter(noleggio.getInizioNoleggio()) && inizioDataOra.isBefore(noleggio.getFineNoleggio())) ||
-                                (fineDataOra.isAfter(noleggio.getInizioNoleggio()) && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
-                    return false;
-                }
-            }
-            //controllo dataOra inizio<fine
-        } else if (inizioDataOra.isAfter(fineDataOra)) {
+        // controllo dataOra inizio<fine
+        if (inizioDataOra.isAfter(fineDataOra)) {
             System.out.println("Data e ora di inizio non puo essere maggiore della data e ora di fine");
             return false;
         }
+        // controllo se datae Ora non in passato
+        if (inizioDataOra.isAfter(LocalDateTime.now())) {
+            for (NoleggioStorico noleggio : autoNoleggate.values()) {
+                // Controllo se auto e occupata in range date inserite
+                if (noleggio.getTarga().equalsIgnoreCase(targa) && ((inizioDataOra.isAfter(noleggio.getInizioNoleggio())
+                        && inizioDataOra.isBefore(noleggio.getFineNoleggio()))
+                        || (fineDataOra.isAfter(noleggio.getInizioNoleggio())
+                        && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
+
+   /* public boolean controllaData(LocalDateTime inizioDataOra, LocalDateTime fineDataOra, String targa) {
+        // se non passato
+        if (inizioDataOra.isBefore(LocalDateTime.now()) || fineDataOra.isBefore(LocalDateTime.now())) {
+            System.out.println("La data inizio e fine devono essere nel futuro");
+            return false;
+        }
+        // inizio < fine
+        if (inizioDataOra.isAfter(fineDataOra)) {
+            System.out.println("La data inizio nondeve essere dopo la data di fine");
+            return false;
+        }
+
+        // occupata nel range date
+        for (NoleggioStorico noleggio : autoNoleggate.values()) {
+            if (noleggio.getTarga().equalsIgnoreCase(targa) &&
+                    ((inizioDataOra.isAfter(noleggio.getInizioNoleggio()) && inizioDataOra.isBefore(noleggio.getFineNoleggio())) ||
+                            (fineDataOra.isAfter(noleggio.getInizioNoleggio()) && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
+                System.out.println("Auto non disponibile per periodo inserito");
+                return false;
+            }
+        }
+
+        return true;
+    }*/
 
 
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
@@ -383,7 +424,7 @@ public class GestioneAutonoleggio {
                 minHour = LocalTime.of(0, 0);
             }
 
-            timeInizio = cm.dammiOraInFuturo("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3,minHour);
+            timeInizio = cm.dammiOraInFuturo("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3, minHour);
             inizioDataOra = dateInizio.atTime(timeInizio);
 
             noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
@@ -402,7 +443,7 @@ public class GestioneAutonoleggio {
         }
         //fine data ora
         dateFine = cm.dammiDatainFuturo("Inserisci la data fine noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
-        timeFine = cm.dammiOraInFuturo("Inserisci un orario del fine noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3,minHour);
+        timeFine = cm.dammiOraInFuturo("Inserisci un orario del fine noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3, minHour);
         fineDataOra = dateFine.atTime(timeFine).truncatedTo(ChronoUnit.MINUTES);
 
         // Calcolo durata e costo
@@ -412,7 +453,6 @@ public class GestioneAutonoleggio {
             noleggioStorico.setFineNoleggio(fineDataOra.truncatedTo(ChronoUnit.MINUTES));
             noleggioStorico.setSommaPagata(costo);
         }
-
         return noleggioStorico;
     }
 
@@ -420,6 +460,9 @@ public class GestioneAutonoleggio {
     //vengono chiamate mostraAutoDisp e calcolaCosto
     public void noleggia() {
         mostraAutoDisp();
+
+
+
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
         if (autoNoleggiabile != null) {
             NoleggioStorico noleggioStorico = calcolaCosto(autoNoleggiabile);
@@ -675,7 +718,7 @@ public class GestioneAutonoleggio {
                         if (opzioniCliente.equals(OpzioniCliente.CERCA_PER_MARCA_MODELLO)) cercaAutoMarcaDisp();
                         if (opzioniCliente.equals(OpzioniCliente.VEDI_LISTA)) mostraAutoDisp();
                         if (opzioniCliente.equals(OpzioniCliente.NOLEGGIA_AUTO)) noleggia();
-                        if (opzioniCliente.equals(OpzioniCliente.VEDI_NOLEGGI)) vediNoleggiDelCliente();
+                        if (opzioniCliente.equals(OpzioniCliente.VEDI_PROPRI_NOLEGGI)) vediNoleggiDelCliente();
                         if (opzioniCliente.equals(OpzioniCliente.ANNULLA_NOLEGGIO)) annullaNoleggio();
                     } while (!opzioniCliente.equals(OpzioniCliente.ESCI));
 
@@ -697,6 +740,7 @@ public class GestioneAutonoleggio {
                         if (opzioniManager.equals(OpzioniManager.VEDI_AUTO_NOLEGGIATE)) stampaAutoNoleggiate();
                         if (opzioniManager.equals(OpzioniManager.RESTITUISCI_AUTO)) restituisciAuto();
                         if (opzioniManager.equals(OpzioniManager.ANNULLA_NOLEGGIO)) annullaNoleggio();
+                        if (opzioniManager.equals(OpzioniManager.VEDI_PROPRI_NOLEGGI)) vediNoleggiDelCliente();
                     } while (!opzioniManager.equals(OpzioniManager.ESCI));
 
                     break;

@@ -5,7 +5,7 @@ public enum OpzioniCliente {
     CERCA_PER_MARCA_MODELLO("Cerca auto disponibili per marca e modello"),
     VEDI_LISTA("Vedi lista tutti auto disponibili"),
     NOLEGGIA_AUTO("Noleggia auto"),
-    VEDI_NOLEGGI("Vedi suoi noleggi attive"),
+    VEDI_PROPRI_NOLEGGI("Vedi tuoi noleggi attive"),
     ANNULLA_NOLEGGIO("Annulla noleggio"),
     ESCI("Esci");
 

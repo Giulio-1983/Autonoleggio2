@@ -13,6 +13,7 @@ public enum OpzioniManager {
     NOLEGGIA_AUTO("Noleggia auto"),
     RESTITUISCI_AUTO("Restituisci auto"),
     VEDI_AUTO_NOLEGGIATE("Vedi lista di auto noleggiate"),
+    VEDI_PROPRI_NOLEGGI("Vedi tuoi noleggi attive"),
     ANNULLA_NOLEGGIO("Annulla noleggio"),
     ESCI("Esci");
 
