@@ -1,9 +1,9 @@
 MMM333,Ford,Focus,MMM333,true,3.0
 GGG777,Subaru,Impreza,GGG777,true,6.25
-TTT000,Volkswagen,Passat,TTT000,false,6.5
+TTT000,Volkswagen,Passat,TTT000,true,6.5
 LLL222,Honda,Accord,LLL222,true,5.25
 OOO555,Nissan,Sentra,OOO555,true,6.25
-AAA111,Toyota,Corolla,AAA111,false,5.5
+AAA111,Toyota,Corolla,AAA111,true,5.5
 BBB000,Honda,Civic,BBB000,false,4.0
 NNN444,Chevrolet,Cruze,NNN444,true,7.5
 RRR888,Mazda,6,RRR888,true,7.0
@@ -11,7 +11,9 @@ CCC333,Ford,Fusion,CCC333,true,3.5
 QQQ777,Subaru,Legacy,QQQ777,false,8.75
 PPP666,Hyundai,Sonata,PPP666,true,4.0
 KKK111,Toyota,Camry,KKK111,true,6.0
-EEE555,Nissan,Altima,EEE555,false,5.25
+EEE555,Nissan,Altima,EEE555,true,5.25
 SSS999,Kia,Rio,SSS999,true,3.5
 JJJ000,Volkswagen,Jetta,JJJ000,true,4.75
-FFF666,Hyundai,Elantra,FFF666,false,3.75
+FFF666,Hyundai,Elantra,FFF666,true,3.75
+WWW999,Volkswagen,Jetta,WWW999,false,4.75
+ZZZ888,Hyundai,Elantra,ZZZ888,false,3.75
