@@ -350,7 +350,6 @@ public class GestioneAutonoleggio {
     }
 
 
-
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
     public NoleggioStorico calcolaCosto(AutoNoleggiabile autoNoleggiabile) {
         LocalDate dateInizio = null;
@@ -364,7 +363,7 @@ public class GestioneAutonoleggio {
         NoleggioStorico noleggioStorico = null;
 
         // se disponibile
-        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()==true) {
+        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == true) {
             System.out.println("AUTO DISP");
             // Start data ora
             dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
@@ -375,7 +374,7 @@ public class GestioneAutonoleggio {
             }
             inizioDataOra = dateInizio.atTime(timeInizio);
             noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
-        } else if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()==false) {
+        } else if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
             System.out.println("AUTO NON DISP");
             // se non disponibile- prendo auto per targa
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
@@ -458,7 +457,7 @@ public class GestioneAutonoleggio {
     //metodo di supporto per chiamare in restituisciAuto
     public NoleggioStorico cercaNoleggioPerFattura() {
         Integer numFatturaInput = null;
-        NoleggioStorico noleggioStorico=null;
+        NoleggioStorico noleggioStorico = null;
         //inserimento di numero
         int[] numFatturaArr = cm.giveInt("Inserisci il numero di fattura", "Non è stato riconosciuto come numero",
                 "Non è stato inserito un numero", 3);
@@ -466,23 +465,24 @@ public class GestioneAutonoleggio {
             numFatturaInput = numFatturaArr[1];
             System.out.println("il numero inserito è: " + numFatturaInput);
         }
-        if(numFatturaArr!=null){
+        if (numFatturaArr != null) {
             //cerco in lista autoNoleggiate
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 if (entry.getKey().equals(numFatturaInput)) {
-                    noleggioStorico= entry.getValue();
-                    System.out.println("Noleggio trovato: "+entry.getValue());
+                    noleggioStorico = entry.getValue();
+                    System.out.println("Noleggio trovato: " + entry.getValue());
                 }
             }
         }
         return noleggioStorico;
     }
 
+    //viene chiamato metodo di supporto cercaNoleggioPerFattura
     public void restituisciAuto() {
-        NoleggioStorico noleggioStoricoOld=cercaNoleggioPerFattura();
-        NoleggioStorico noleggioStoricoNew=null;
+        NoleggioStorico noleggioStoricoOld = cercaNoleggioPerFattura();
+        NoleggioStorico noleggioStoricoNew = null;
         AutoNoleggiabile autoNoleggiabile = parcoAuto.get(noleggioStoricoOld.getTarga());
-        System.out.println("Auto: "+autoNoleggiabile);
+        System.out.println("Auto: " + autoNoleggiabile);
         if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
             noleggioStoricoNew = calcolaCosto(autoNoleggiabile);
             noleggioStoricoOld.setFineNoleggio(noleggioStoricoNew.getFineNoleggio());
@@ -498,8 +498,36 @@ public class GestioneAutonoleggio {
         }
     }
 
+    public void vediNoleggiDelCliente(){
+        System.out.println("Tuoi noleggi attivi: ");
+        for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+            if (entry.getValue().getAffidatarioEmail().equalsIgnoreCase(utenteAttivo.getEmail())) {
+                System.out.println("Numero fattura: "+entry.getKey() +", Noleggio: "+ entry.getValue());
+            }else{
+                System.out.println("Non hai noleggi attivi");
+            }
+        }
+    }
 
-
+    //vengono chiamati metodi di supporto vediNoleggiDelCliente e cercaNoleggioPerFattura
+    public void annullaNoleggio() {
+        vediNoleggiDelCliente();
+        NoleggioStorico noleggioStorico = cercaNoleggioPerFattura();
+        if (noleggioStorico != null&&
+                (utenteAttivo.getEmail().equalsIgnoreCase(noleggioStorico.getAffidatarioEmail()))
+        ||utenteAttivo.getRuolo().equals(Ruoli.MANAGER)) {
+            for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
+                if (entry.getValue() == noleggioStorico) {
+                    autoNoleggate.remove(entry.getKey());
+                    System.out.println("Noleggio con numFattura " + noleggioStorico.getNumFattura() + " annullato");
+                    break;
+                }
+            }
+            System.out.println("Noleggio non trovato");
+        } else {
+            System.out.println("Noleggio non trovato");
+        }
+    }
 
     public void cambiaStatoAuto() {
         String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
@@ -636,6 +664,8 @@ public class GestioneAutonoleggio {
                         if (opzioniCliente.equals(OpzioniCliente.CERCA_PER_MARCA_MODELLO)) cercaAutoMarcaDisp();
                         if (opzioniCliente.equals(OpzioniCliente.VEDI_LISTA)) mostraAutoDisp();
                         if (opzioniCliente.equals(OpzioniCliente.NOLEGGIA_AUTO)) noleggia();
+                        if (opzioniCliente.equals(OpzioniCliente.VEDI_NOLEGGI)) vediNoleggiDelCliente();
+                        if (opzioniCliente.equals(OpzioniCliente.ANNULLA_NOLEGGIO)) annullaNoleggio();
                     } while (!opzioniCliente.equals(OpzioniCliente.ESCI));
 
                     break;
@@ -655,6 +685,7 @@ public class GestioneAutonoleggio {
                         if (opzioniManager.equals(OpzioniManager.STAMPA_LISTA_UTENTI)) stampaUtenti();
                         if (opzioniManager.equals(OpzioniManager.VEDI_AUTO_NOLEGGIATE)) stampaAutoNoleggiate();
                         if (opzioniManager.equals(OpzioniManager.RESTITUISCI_AUTO)) restituisciAuto();
+                        if (opzioniManager.equals(OpzioniManager.ANNULLA_NOLEGGIO)) annullaNoleggio();
                     } while (!opzioniManager.equals(OpzioniManager.ESCI));
 
                     break;
