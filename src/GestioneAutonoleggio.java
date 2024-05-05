@@ -148,7 +148,7 @@ public class GestioneAutonoleggio {
         String modello = null;
         if (modelloArr[0].equals("1")) modello = modelloArr[1];
         System.out.println("Il modello inserito è: " + modello);
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         System.out.println("Inserisci costo orario");
         double costoOrario = cm.dammiDouble("Inserisci costo orario in formato: x.xx: ", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         //controllo se esiste targa nella lista
@@ -177,21 +177,22 @@ public class GestioneAutonoleggio {
         if (mailArr[0].equals("1")) mail = mailArr[1];
         Ruoli ruolo = null;
         //batman è gia inserito nella listaUtenti
+
         if (mail.contains("@autonoleggio.com")) {
             ruolo = Ruoli.MANAGER;
+        } else if (mail.equals("Bruce@batcaverna.bat")) {
+            ruolo = Ruoli.BATMAN;
         } else {
             ruolo = Ruoli.CLIENTE;
         }
         //controllo se esiste mail nella lista
-        for (Map.Entry<String, Utente> entry : listaUtenti.entrySet()) {
-            if (entry.getValue().getEmail().equalsIgnoreCase(mail)) {
-                System.out.println("Utente con email inserito è gia presente in listaUtenti");
-            } else {
-                listaUtenti.put(mail, new Utente(nome, cognome, mail, psw, ruolo));
-                System.out.println("Utente aggiunto nella lista utenti: ");
-            }
+        if (listaUtenti.containsKey(mail)) {
+            System.out.println("Utente con email inserito è già presente in listaUtenti");
+        } else {
+            listaUtenti.put(mail, new Utente(nome, cognome, mail, psw, ruolo));
+            System.out.println("Utente aggiunto nella lista utenti: ");
+            salvaFileUtenti();
         }
-        salvaFileUtenti();
     }
 
     //metodo di supporto -da chiamare in aggiungiAuto
@@ -289,7 +290,7 @@ public class GestioneAutonoleggio {
     }
 
     public void cercaAutoMarcaDisp() {
-        int count=0;
+        int count = 0;
         String[] marcaArr = cm.giveString("Inserisci marca", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String marca = null;
         if (marcaArr[0].equals("1")) marca = marcaArr[1];
@@ -308,7 +309,7 @@ public class GestioneAutonoleggio {
 
                 }
             }
-            if (count==0) System.out.println("Non ci sono auto disponibili con parametri cercati");
+            if (count == 0) System.out.println("Non ci sono auto disponibili con parametri cercati");
         } else {
             System.out.println("Non possibile mostrare auto, il parcoAuto è vuoto");
         }
@@ -326,7 +327,7 @@ public class GestioneAutonoleggio {
 
     public AutoNoleggiabile cercaAutoPerTarga() {
         AutoNoleggiabile autoNoleggiabile = null;
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(targa)) {
                 autoNoleggiabile = entry.getValue();
@@ -339,13 +340,20 @@ public class GestioneAutonoleggio {
 
     //metodo di suppotro per chiamare in nolegggia
     public boolean controllaData(LocalDateTime inizioDataOra, LocalDateTime fineDataOra, String targa) {
-        for (NoleggioStorico noleggio : autoNoleggate.values()) {
-            // Controllo se auto e occupata in range date inserite
-            if (noleggio.getTarga().equalsIgnoreCase(targa) &&
-                    ((inizioDataOra.isAfter(noleggio.getInizioNoleggio()) && inizioDataOra.isBefore(noleggio.getFineNoleggio())) ||
-                            (fineDataOra.isAfter(noleggio.getInizioNoleggio()) && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
-                return false;
+        //controllo se datae Ora non in passato
+        if (inizioDataOra.isAfter(LocalDateTime.now())) {
+            for (NoleggioStorico noleggio : autoNoleggate.values()) {
+                // Controllo se auto e occupata in range date inserite
+                if (noleggio.getTarga().equalsIgnoreCase(targa) &&
+                        ((inizioDataOra.isAfter(noleggio.getInizioNoleggio()) && inizioDataOra.isBefore(noleggio.getFineNoleggio())) ||
+                                (fineDataOra.isAfter(noleggio.getInizioNoleggio()) && fineDataOra.isBefore(noleggio.getFineNoleggio())))) {
+                    return false;
+                }
             }
+            //controllo dataOra inizio<fine
+        } else if (inizioDataOra.isAfter(fineDataOra)) {
+            System.out.println("Data e ora di inizio non puo essere maggiore della data e ora di fine");
+            return false;
         }
         return true;
     }
@@ -353,10 +361,12 @@ public class GestioneAutonoleggio {
 
     //metodo di supporto da chiamare in noleggia e restuituisci Auto
     public NoleggioStorico calcolaCosto(AutoNoleggiabile autoNoleggiabile) {
+        LocalTime minHour = null;
         LocalDate dateInizio = null;
         LocalTime timeInizio = null;
         LocalDate dateFine = null;
         LocalTime timeFine = null;
+
         LocalDateTime inizioDataOra = null;
         LocalDateTime fineDataOra = null;
         Duration durata = null;
@@ -366,13 +376,16 @@ public class GestioneAutonoleggio {
         // se disponibile
         if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == true) {
             // Start data ora
-            dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
-            LocalTime[] inizioTimeArr = cm.giveTime("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
-            if (inizioTimeArr[0].equals(LocalTime.of(00, 01))) {
-                timeInizio = inizioTimeArr[1];
-                System.out.println("L'orario inserito è: " + timeInizio);
+            dateInizio = cm.dammiDatainFuturo("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
+            if (dateInizio.equals(LocalDate.now())) {
+                minHour = LocalTime.now();
+            } else {
+                minHour = LocalTime.of(0, 0);
             }
+
+            timeInizio = cm.dammiOraInFuturo("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3,minHour);
             inizioDataOra = dateInizio.atTime(timeInizio);
+
             noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
         } else if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
             System.out.println("AUTO NON DISP");
@@ -388,17 +401,10 @@ public class GestioneAutonoleggio {
         } else {
             System.out.println("Auto non trovata o non disponibile, impossibile calcolare il costo.");
         }
-
         //fine data ora
-        dateFine = cm.dammiData("Inserisci la data fine noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
-        LocalTime[] fineTimeArr = cm.giveTime("Inserisci un orario della fine di noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
-        if (fineTimeArr[0].equals(LocalTime.of(00, 01))) {
-            // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            timeFine = fineTimeArr[1].truncatedTo(ChronoUnit.MINUTES);
-            System.out.println("L'orario inserito è: " + timeFine);
-        }
+        dateFine = cm.dammiDatainFuturo("Inserisci la data fine noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
+        timeFine = cm.dammiOraInFuturo("Inserisci un orario del fine noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", "Ora inserita con sucesso", 3,minHour);
         fineDataOra = dateFine.atTime(timeFine).truncatedTo(ChronoUnit.MINUTES);
-
 
         // Calcolo durata e costo
         if (inizioDataOra != null && fineDataOra != null) {
@@ -412,6 +418,7 @@ public class GestioneAutonoleggio {
     }
 
 
+    //vengono chiamate mostraAutoDisp e calcolaCosto
     public void noleggia() {
         mostraAutoDisp();
         AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
@@ -441,7 +448,7 @@ public class GestioneAutonoleggio {
 
 
     public void rimuoviAuto() {
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(targa)) {
                 parcoAuto.remove(entry.getKey());
@@ -499,16 +506,16 @@ public class GestioneAutonoleggio {
         }
     }
 
-    public void vediNoleggiDelCliente(){
+    public void vediNoleggiDelCliente() {
         System.out.println("Tuoi noleggi attivi: ");
-        int count=0;
+        int count = 0;
         for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
             if (entry.getValue().getAffidatarioEmail().equalsIgnoreCase(utenteAttivo.getEmail())) {
-                System.out.println("Numero fattura: "+entry.getKey() +", Noleggio: "+ entry.getValue());
+                System.out.println("Numero fattura: " + entry.getKey() + ", Noleggio: " + entry.getValue());
                 count++;
             }
         }
-        if (count==0)
+        if (count == 0)
             System.out.println("Noi hai noleggi attivi");
     }
 
@@ -516,9 +523,9 @@ public class GestioneAutonoleggio {
     public void annullaNoleggio() {
         vediNoleggiDelCliente();
         NoleggioStorico noleggioStorico = cercaNoleggioPerFattura();
-        if (noleggioStorico != null&&
+        if (noleggioStorico != null &&
                 (utenteAttivo.getEmail().equalsIgnoreCase(noleggioStorico.getAffidatarioEmail()))
-        ||utenteAttivo.getRuolo().equals(Ruoli.MANAGER)) {
+                || utenteAttivo.getRuolo().equals(Ruoli.MANAGER)) {
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 if (entry.getValue() == noleggioStorico) {
                     parcoAuto.get(noleggioStorico.getTarga()).setDisponibile(true);
@@ -535,7 +542,7 @@ public class GestioneAutonoleggio {
     }
 
     public void cambiaStatoAuto() {
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Map.Entry<String, AutoNoleggiabile> entry : parcoAuto.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(targa)) {
                 entry.getValue().setDisponibile(!entry.getValue().isDisponibile());
@@ -593,7 +600,7 @@ public class GestioneAutonoleggio {
         String modello = null;
         if (modelloArr[0].equals("1")) modello = modelloArr[1];
         System.out.println("Il modello inserito è: " + modello);
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         String[] nomeArr = cm.giveString("Inserisci nome", "Formato non valido, riprova", "Inserimento Non andato con successo", 3);
         String nome = null;
         if (nomeArr[0].equals("1")) nome = nomeArr[1];
@@ -616,7 +623,7 @@ public class GestioneAutonoleggio {
     }
 
     public void rimuoviBatmobile() {
-        String targa = cm.dammiTarga("Inserisci targa", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
+        String targa = cm.dammiTarga("Inserisci targa: da 4 a 8 caratteri alfanumerici", "Formato non valido, riprova", "Inserimento Non andato con successo", "Inserimento andato con successo", 3);
         for (Map.Entry<String, Batmobile> entry : listaBatmobili.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(targa)) {
                 listaBatmobili.remove(entry.getKey());
