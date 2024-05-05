@@ -17,10 +17,11 @@ public class GestioneAutonoleggio {
 
     ConsoleManage cm = new ConsoleManage();
     private Map<String, AutoNoleggiabile> parcoAuto = new HashMap<>();
+    private Map<Integer, NoleggioStorico> autoNoleggate = new HashMap<>();
     private Map<String, Utente> listaUtenti = new HashMap<>();
     private Map<String, Batmobile> listaBatmobili = new HashMap<>();
-    private Map<Integer, NoleggioStorico> autoNoleggate = new HashMap<>();
-    private Utente utenteAttivo=null;
+
+    private Utente utenteAttivo = null;
 
 
     private final String fileUtenti = "src" + File.separator + "file" + File.separator + "utenti.txt";
@@ -335,8 +336,7 @@ public class GestioneAutonoleggio {
     }
 
 
-    //metodo di supporto da chiamare in noleggia e restuituisci Auto
-
+    //metodo di suppotro per chiamare in nolegggia
     public boolean controllaData(LocalDateTime inizioDataOra, LocalDateTime fineDataOra, String targa) {
         for (NoleggioStorico noleggio : autoNoleggate.values()) {
             // Controllo se auto e occupata in range date inserite
@@ -348,6 +348,10 @@ public class GestioneAutonoleggio {
         }
         return true;
     }
+
+
+
+    //metodo di supporto da chiamare in noleggia e restuituisci Auto
     public NoleggioStorico calcolaCosto(AutoNoleggiabile autoNoleggiabile) {
         LocalDate dateInizio = null;
         LocalTime timeInizio = null;
@@ -360,7 +364,8 @@ public class GestioneAutonoleggio {
         NoleggioStorico noleggioStorico = null;
 
         // se disponibile
-        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()) {
+        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()==true) {
+            System.out.println("AUTO DISP");
             // Start data ora
             dateInizio = cm.dammiData("Inserisci la data inizio noleggio : dd-MM-yyyy", "Non è stata riconosciuta come data", "Non è stata inserita una data", "Data inserita con successo", 3);
             LocalTime[] inizioTimeArr = cm.giveTime("Inserisci un orario del inizio noleggio (HH:mm)", "Non è stato riscontrato come orario", "Non è stato inserito un orario", 3);
@@ -370,7 +375,8 @@ public class GestioneAutonoleggio {
             }
             inizioDataOra = dateInizio.atTime(timeInizio);
             noleggioStorico = new NoleggioStorico(autoNoleggiabile.getTarga(), utenteAttivo.getEmail(), inizioDataOra, null, costo);
-        } else if (autoNoleggiabile != null && !autoNoleggiabile.isDisponibile()) {
+        } else if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile()==false) {
+            System.out.println("AUTO NON DISP");
             // se non disponibile- prendo auto per targa
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
                 if (entry.getValue().getTarga().equalsIgnoreCase(autoNoleggiabile.getTarga())) {
@@ -448,30 +454,51 @@ public class GestioneAutonoleggio {
 
     // public void aggiungiAuto() {} //tutto in salvaFileAuto
 
-    public void restituisciAuto() {
-        AutoNoleggiabile autoNoleggiabile = cercaAutoPerTarga();
-        NoleggioStorico noleggioStorico=null;
-        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
-           noleggioStorico = calcolaCosto(autoNoleggiabile);
-          //  NoleggioStorico noleggioStoricoOld=null;
 
+    //metodo di supporto per chiamare in restituisciAuto
+    public NoleggioStorico cercaNoleggioPerFattura() {
+        Integer numFatturaInput = null;
+        NoleggioStorico noleggioStorico=null;
+        //inserimento di numero
+        int[] numFatturaArr = cm.giveInt("Inserisci il numero di fattura", "Non è stato riconosciuto come numero",
+                "Non è stato inserito un numero", 3);
+        if (numFatturaArr[0] == 1) {
+            numFatturaInput = numFatturaArr[1];
+            System.out.println("il numero inserito è: " + numFatturaInput);
+        }
+        if(numFatturaArr!=null){
+            //cerco in lista autoNoleggiate
             for (Map.Entry<Integer, NoleggioStorico> entry : autoNoleggate.entrySet()) {
-                if (entry.getValue().getTarga().equals(autoNoleggiabile.getTarga())) {
-                    NoleggioStorico noleggioStoricoOld = entry.getValue();
-                    noleggioStoricoOld.setFineNoleggio(noleggioStorico.getFineNoleggio());
-                    noleggioStoricoOld.setSommaPagata(noleggioStorico.getSommaPagata());
-                    break;
+                if (entry.getKey().equals(numFatturaInput)) {
+                    noleggioStorico= entry.getValue();
+                    System.out.println("Noleggio trovato: "+entry.getValue());
                 }
             }
-                autoNoleggiabile.setDisponibile(true);
-                salvaFileAutoNoleggiate();
-                salvaFileAuto();
-                System.out.println("Auto restituita con successo");
+        }
+        return noleggioStorico;
+    }
+
+    public void restituisciAuto() {
+        NoleggioStorico noleggioStoricoOld=cercaNoleggioPerFattura();
+        NoleggioStorico noleggioStoricoNew=null;
+        AutoNoleggiabile autoNoleggiabile = parcoAuto.get(noleggioStoricoOld.getTarga());
+        System.out.println("Auto: "+autoNoleggiabile);
+        if (autoNoleggiabile != null && autoNoleggiabile.isDisponibile() == false) {
+            noleggioStoricoNew = calcolaCosto(autoNoleggiabile);
+            noleggioStoricoOld.setFineNoleggio(noleggioStoricoNew.getFineNoleggio());
+            noleggioStoricoOld.setSommaPagata(noleggioStoricoNew.getSommaPagata());
+
+            autoNoleggiabile.setDisponibile(true);
+            salvaFileAutoNoleggiate();
+            salvaFileAuto();
+            System.out.println("Auto restituita con successo");
 
         } else {
-            System.out.println("Auto non trovata.");
+            System.out.println("Auto non trovata");
         }
     }
+
+
 
 
     public void cambiaStatoAuto() {
