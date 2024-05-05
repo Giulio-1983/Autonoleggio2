@@ -20,7 +20,7 @@ public class GestioneAutonoleggio {
     private Map<String, Utente> listaUtenti = new HashMap<>();
     private Map<String, Batmobile> listaBatmobili = new HashMap<>();
     private Map<Integer, NoleggioStorico> autoNoleggate = new HashMap<>();
-    private Utente utente;
+    private Utente utente=null;
 
 
     private final String fileUtenti = "src" + File.separator + "file" + File.separator + "utenti.txt";
@@ -28,7 +28,7 @@ public class GestioneAutonoleggio {
     private final String fileBatmoboli = "src" + File.separator + "file" + File.separator + "batmobili.txt";
     private final String fileNoleggioStorico = "src" + File.separator + "file" + File.separator + "noleggioStorico.txt";
 
-    public Utente login() {
+    public void login() {
         boolean isTrovato = false;
         // Utente utenteAttivo = null;
         String mail = null;
@@ -46,7 +46,7 @@ public class GestioneAutonoleggio {
         } else {
             System.out.println("Ciao, " + utente.getNome() + "!");
         }
-        return utente;
+
     }
 
     public void caricaFileAuto() {
@@ -572,7 +572,6 @@ public class GestioneAutonoleggio {
         caricaFileAuto();
         caricaFileBatmobili();
         caricaFileNoleggio();
-        Utente utente = null;
         OpzioniCliente opzioniCliente = null;
         OpzioniManager opzioniManager = null;
         OpzioniBatman opzioniBatman = null;
@@ -584,7 +583,7 @@ public class GestioneAutonoleggio {
             }
         } while (input != 2 && input != 0);
         if (input == 2) {
-            utente = login();
+            login();
             switch (utente.getRuolo()) {
                 case CLIENTE:
                     do {
@@ -630,11 +629,10 @@ public class GestioneAutonoleggio {
             }
         } else {
             System.out.println("Arrivederci!");
-
         }
         cm.closeScanner();
-
     }
-}
+
+}//
 
 
