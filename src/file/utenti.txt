@@ -1,3 +1,6 @@
-bruce@batcaverna.bat,batman,bat,bruce@batcaverna.bat,0937c115b9a45e24f8453cce18b736c2f68e65bb969d6b590168b2f05571317e,BATMAN
+bruce@batcaverna.bat,Bruce,Wayne,bruce@batcaverna.bat,0937c115b9a45e24f8453cce18b736c2f68e65bb969d6b590168b2f05571317e,BATMAN
+maria@auto.com,Maria,Bianchi,maria@auto.com,0f7cdce211b96c9b39de4ea1ea4938477760582820def323a10c34bbc494d6f3,MANAGER
 mm@auto.com,manager,man,mm@auto.com,55d325d3ebcf77d269100efee1c7a9081f592963137a6a3635d70fd250ad611c,MANAGER
+laura@gmail.com,Laura,Verdi,laura@gmail.com,9819d68531bf690bd7c7b890504527e91a66534478ecd857fc193d7eba74a272,CLIENTE
+mario83@gmail.com,Mario,Rossi,mario83@gmail.com,d3b7705565058fc8492640d95d6aaa5f1f6846f40dfba87bac19c12822c95056,CLIENTE
 cc@cc.cc,cliente,clientone,cc@cc.cc,19daca7a7f2b9aa7b65b5d9718659cd235efffb00ceecd9b47805c3d5fd15263,CLIENTE

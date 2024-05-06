@@ -731,6 +731,10 @@ public class GestioneAutonoleggio {
         }
     }
 
+    public void esci() {
+        utenteAttivo = null;
+    }
+
     public void stampaMenu() {
         caricaFileUtenti();
         caricaFileAuto();
@@ -748,10 +752,13 @@ public class GestioneAutonoleggio {
                 }
                 if (input == 2) {
                     login();
+                    boolean isFinito = false;
                     if (utenteAttivo != null) {
                         switch (utenteAttivo.getRuolo()) {
+
                             case CLIENTE:
-                                do {
+
+                                while (utenteAttivo.getRuolo().equals(Ruoli.CLIENTE)) {
                                     opzioniCliente = cm.stampaOpzioniCliente();
 
                                     if (opzioniCliente.equals(OpzioniCliente.CERCA_PER_COSTO)) cercaAutoCostoDisp();
@@ -762,12 +769,13 @@ public class GestioneAutonoleggio {
                                     if (opzioniCliente.equals(OpzioniCliente.VEDI_PROPRI_NOLEGGI))
                                         vediNoleggiDelCliente();
                                     if (opzioniCliente.equals(OpzioniCliente.ANNULLA_NOLEGGIO)) annullaNoleggio();
-                                    if (opzioniCliente.equals(OpzioniCliente.ESCI)) break;
-                                } while (!opzioniCliente.equals(OpzioniCliente.ESCI));
-
+                                    if (opzioniCliente.equals(OpzioniCliente.ESCI)) {
+                                        utenteAttivo.setRuolo(Ruoli.NESSUNO);
+                                    }
+                                }
                                 break;
                             case MANAGER:
-                                do {
+                                while (utenteAttivo.getRuolo().equals(Ruoli.MANAGER)) {
                                     opzioniManager = cm.stampaOpzioniManager();
 
                                     if (opzioniManager.equals(OpzioniManager.CERCA_PER_COSTO)) cercaAutoCostoDisp();
@@ -787,26 +795,27 @@ public class GestioneAutonoleggio {
                                     if (opzioniManager.equals(OpzioniManager.ANNULLA_NOLEGGIO)) annullaNoleggio();
                                     if (opzioniManager.equals(OpzioniManager.VEDI_PROPRI_NOLEGGI))
                                         vediNoleggiDelCliente();
-                                    if (opzioniManager.equals(OpzioniManager.ESCI)) break;
-                                } while (!opzioniManager.equals(OpzioniManager.ESCI));
-
+                                    if (opzioniManager.equals(OpzioniManager.ESCI)) {
+                                        utenteAttivo.setRuolo(Ruoli.NESSUNO);
+                                    }
+                                }
                                 break;
                             case BATMAN:
-                                do {
+                                while (utenteAttivo.getRuolo().equals(Ruoli.BATMAN)) {
                                     opzioniBatman = cm.stampaOpzioniBatman();
                                     if (opzioniBatman.equals(OpzioniBatman.AGGIUNGI_BATMOBILE)) aggiungiBatmobile();
                                     if (opzioniBatman.equals(OpzioniBatman.RIMUOVI_BATMOBILE)) rimuoviBatmobile();
                                     if (opzioniBatman.equals(OpzioniBatman.VEDI_LISTA_BATMOBILI)) stampaBatmobili();
-                                    if (opzioniBatman.equals(OpzioniBatman.ESCI)) break;
-                                } while (!opzioniBatman.equals(OpzioniBatman.ESCI));
-
+                                    if (opzioniBatman.equals(OpzioniBatman.ESCI)) {
+                                        utenteAttivo.setRuolo(Ruoli.NESSUNO);
+                                    }
+                                }
+                                break;
                             default:
                                 System.out.println("Stai per uscire");
                                 break;
                         }
                     }
-                } else {
-                    //System.out.println("Arrivederci!");
                 }
 
             } catch (NumberFormatException e) {
@@ -814,6 +823,7 @@ public class GestioneAutonoleggio {
             }
 
         } while (input == null || (input != 2 && input != 0));
+
         System.out.println("Arrivederci!");
         cm.closeScanner();
     }

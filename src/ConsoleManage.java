@@ -417,7 +417,7 @@ public class ConsoleManage {
     public String dammiTarga(String msgShow, String msgRetry, String msgError,
                              String msgSuccess, int tentativi) {
         String input = null;
-        String regexTarga = "^[a-zA-Z0-9]{4,8}$";
+        String regexTarga = "[A-Z]{2}[0-9]{3,4}[A-Z]{2}";
 
         do {
             System.out.println(ANSI_CYAN_BACKGROUND + ANSI_BLACK + msgShow + ANSI_RESET);
@@ -506,10 +506,11 @@ public class ConsoleManage {
             }
             System.out.println("Inserisci la tua scelta: ");
             input = Integer.parseInt(myScan.nextLine());
-            if (input < 0 || input >= OpzioniManager.values().length) {
+            if (input < 0 || input > OpzioniManager.values().length) {
                 System.out.println("Scelta non valida. Riprova.");
+                indexMenu=0;
             }
-        } while (input < 0 || input >= OpzioniManager.values().length);
+        } while (input < 0 || input > OpzioniManager.values().length);
         System.out.println("Hai scelto: " + OpzioniManager.values()[input - 1]);
         indexMenu = 0;
         return OpzioniManager.values()[input - 1];
@@ -524,17 +525,17 @@ public class ConsoleManage {
             }
             System.out.println("Inserisci la tua scelta: ");
             input = Integer.parseInt(myScan.nextLine());
-            if (input < 0 || input >= OpzioniCliente.values().length) {
+            if (input < 0 || input > OpzioniCliente.values().length) {
                 System.out.println("Scelta non valida. Riprova.");
+                indexMenu=0;
             }
-        } while (input < 0 || input >= OpzioniCliente.values().length);
+        } while (input < 0 || input > OpzioniCliente.values().length);
         System.out.println("Hai scelto: " + OpzioniCliente.values()[input - 1]);
         indexMenu = 0;
         return OpzioniCliente.values()[input - 1];
     }
 
     public OpzioniBatman stampaOpzioniBatman() {
-
         int input;
         do {
             for (OpzioniBatman opzione : OpzioniBatman.values()) {
@@ -542,10 +543,11 @@ public class ConsoleManage {
             }
             System.out.println("Inserisci la tua scelta: ");
             input = Integer.parseInt(myScan.nextLine());
-            if (input < 0 || input >= OpzioniBatman.values().length) {
+            if (input < 0 || input > OpzioniBatman.values().length) {
                 System.out.println("Scelta non valida. Riprova.");
+                indexMenu=0;
             }
-        } while (input < 0 || input >= OpzioniBatman.values().length);
+        } while (input < 0 || input > OpzioniBatman.values().length);
         System.out.println("Hai scelto: " + OpzioniBatman.values()[input - 1]);
         indexMenu = 0;
         return OpzioniBatman.values()[input - 1];
