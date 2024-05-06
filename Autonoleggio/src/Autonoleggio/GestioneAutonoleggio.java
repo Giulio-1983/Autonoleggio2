@@ -80,10 +80,13 @@ public class GestioneAutonoleggio {
 		String email = scanner.nextLine();
 		
 		if (email.equalsIgnoreCase("bruce@batcaverna.bat")) {
-			System.out.println("Inserisci la tua password");
-			String password = scanner.nextLine();
-			if (password)
-		}
+	        System.out.println("Inserisci la tua password");
+	        String password = scanner.nextLine();
+	        if (password.equals("batmansuperpassword")) {
+	          menuBatman();
+	        } else {
+	          return;
+	        }
 		
 		for (Map.Entry<String, Utente> entry : listaUtenti.entrySet()) {
 			if (entry.getValue().getEmail().equals(email)) {
