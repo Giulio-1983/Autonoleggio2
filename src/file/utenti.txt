@@ -1,8 +1,3 @@
-mm@mm.mm,manager1,Uno,mm@mm.mm,M-111111,MANAGER
-gg@gg.gg,Cliente,Cinque,gg@gg.gg,G-555555,CLIENTE
-dd@dd.dd,Cliente,Due,dd@dd.dd,D-222222,CLIENTE
-ff@ff.ff,Cliente,Quattro,ff@ff.ff,F-444444,CLIENTE
-cc@cc.cc,Cliente,Uno,cc@cc.cc,C-111111,CLIENTE
-Bruce@batcaverna.bat,bat,man,bb@bb.bb,B-111111,BATMAN
-ee@ee.ee,Cliente,Tre,ee@ee.ee,E-333333,CLIENTE
-c2@cc.cc,Clientone,uno,c2@cc.cc,C-000000,CLIENTE
+bruce@batcaverna.bat,batman,bat,bruce@batcaverna.bat,0937c115b9a45e24f8453cce18b736c2f68e65bb969d6b590168b2f05571317e,BATMAN
+mm@auto.com,manager,man,mm@auto.com,55d325d3ebcf77d269100efee1c7a9081f592963137a6a3635d70fd250ad611c,MANAGER
+cc@cc.cc,cliente,clientone,cc@cc.cc,19daca7a7f2b9aa7b65b5d9718659cd235efffb00ceecd9b47805c3d5fd15263,CLIENTE
